@@ -8,32 +8,48 @@
             <div>
                 <img src="../assets/bg_login.png"/>
                 <div class="login-form">
-                    <div class="input-icon">
-                        <i class="fas fa-user"></i>
-                        <input type="text" placeholder="请输入用户名" />
-                    </div>
-                    <div class="input-icon">
-                        <i class="fas fa-unlock"></i>
-                        <input type="password" placeholder="请输入密码" />
-                    </div>
-                    <button>登录</button>
+                    <form @submit.prevent="handleLogin">
+                        <div class="input-icon">
+                            <img src="../assets/icon_accout.png" class="icon"/>
+                            <input type="text" v-model="username" placeholder="请输入用户名"  required/>
+                        </div>
+                        <div class="input-icon">
+                            <img src="../assets/icon_pasword.png" class="icon"/>
+                            <input type="password" v-model="password" placeholder="请输入密码" required/>
+                        </div>
+                        <button type="submit">登录</button>
+                    </form>
+                    
                 </div>
-             </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    setup() {
-        return {}
+    name : 'login',
+    data() {
+        return {
+           username:'',
+           password:'', 
+        }
+    },
+    methods: {
+        handleLogin() {
+            if (this.username === 'admin' && this.password === 'admin') {
+                this.$router.push( { name : 'home' });
+            } else{
+                alert('用户名或密码错误');
+            }
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
 @import url(/src/assets/font/font.css);
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css'); /* 导入FontAwesome */
+
 .login {
     width: 100%;
     height: 100%;
@@ -58,14 +74,14 @@ export default {
         top: -530px;
         color: white;
         font-family: 'font_style';
-        position: relative; 
+        position: relative;
         text-shadow: 0 0 10px white;
     }
     img {
         width: 400px;
         top: -520px;
         margin-left: 933px;
-        position: relative; 
+        position: relative;
     }
     .login-form {
         display: flex;
@@ -78,24 +94,26 @@ export default {
             position: relative;
             width: 300px;
             margin-bottom: 20px;
-            i {
+            .icon {
                 position: absolute;
-                left: 10px;
+                left: -920px;
                 top: 50%;
                 transform: translateY(-50%);
-                color: rgb(255, 255, 255); /* 设置图标颜色 */
+                width: 20px;
+                height: 20px;
             }
             input {
                 width: 100%;
                 height: 40px;
-                padding: 5px 10px 5px 30px; /* 调整左内边距给图标留位置 */
+                padding: 5px 10px 5px 40px; /* 调整左内边距给图标留位置 */
                 font-size: 16px;
                 border: 1px solid #ccc;
                 border-radius: 5px;
-                background-color: #4c8cd0; /* 设置为蓝色背景 */
+                background-color: #4c8cd0be; /* 设置为蓝色背景 */
                 color: white; /* 设置文字颜色 */
-                ::placeholder {
-                    color: rgba(255, 255, 255, 0.7); /* 设置占位符文字颜色 */
+                &::placeholder {
+                    color: rgba(255, 255, 255, 0.665); /* 设置占位符文字颜色 */
+                    font-weight: bold; /* 设置占位符文字加粗 */
                 }
             }
         }
