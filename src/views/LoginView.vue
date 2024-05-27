@@ -49,6 +49,8 @@ export default {
 
 <style lang="scss" scoped>
 @import url(/src/assets/font/font.css);
+@import url('../assets/font/font2.css');
+
 
 .login {
     width: 100%;
@@ -73,7 +75,7 @@ export default {
         margin-left: 910px;
         top: -530px;
         color: white;
-        font-family: 'font_style';
+        font-family: 'font2_style';
         position: relative;
         text-shadow: 0 0 10px white;
     }
@@ -121,6 +123,7 @@ export default {
             width: 300px;
             height: 45px;
             font-size: 18px;
+            font-weight: bold;
             color: white;
             background-color: #007BFF;
             border: none;

@@ -18,6 +18,7 @@ import { RouterLink, RouterView } from 'vue-router'
 html,
 body,
 #app {
+  /* margin: 0; */
   width: 100%;
   height: 100%;
 }
