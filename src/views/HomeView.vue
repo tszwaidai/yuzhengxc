@@ -84,11 +84,80 @@
             <span class="span1">预警数统计</span>
         </div>
         <div class="right-icon1">
-
         </div>
+        <div class="little-icons">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="yujing-list">
+            <span class="span1">今日预警数</span>
+            <span class="span2">4</span>
+            <br>
+            <span class="span1">本月预警数</span>
+            <span class="span2">78</span>
+            <br>
+            <span class="span1">累计预警数</span>
+            <span class="span2">542</span>
+        </div>
+
+    
+
+    
+    
+    
+    
+    
+    
     </div>
 
-    <!-- <el-calendar v-model="value" /> -->
+
+    <div class="right-top2">
+            <div class="right-icon2"></div>
+            <div class="right-title2">
+                <span class="span1">处理数统计</span>
+            </div>
+            <div class="right-icon3">
+            </div>
+            <div class="little-icons2">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <div class="yujing-list2">
+                <span class="span1">今日处理数</span>
+                <span class="span2">0</span>
+                <br>
+                <span class="span1">本月处理数</span>
+                <span class="span2">29</span>
+                <br>
+                <span class="span1">累计处理数</span>
+                <span class="span2">55</span>
+            </div>
+        
+    </div>
+
+    <div class="right-top3">
+        <div class="right-icon4"></div>
+        <div class="right-title3">
+            <span class="span1">事件趋势日历</span>
+        </div>
+
+        <div class="calendar">
+            <el-calendar v-model="value">
+                <template >
+                    <div class="is-point">
+                        <span></span>
+                        <i  />
+                    </div>
+                </template>
+            </el-calendar>
+        </div>
+
+    </div>
+
+
+    
    </div>
 
 
@@ -206,7 +275,7 @@ export default {
 
 
 
-
+// 地图
 .bm-view {
 
     margin-left: -200px;
@@ -242,22 +311,38 @@ export default {
     margin-left: 1330px;
     margin-top: -170px;
     .custom-button {
-        opacity: 0.8; /* 降低透明度 */
+        // opacity: 0.8; 
         border: 2px solid rgb(0, 32, 67, 0.544); /* 边框颜色和透明度 */
         border-radius: 15px; /* 圆角边框 */
         box-shadow: 0 0 10px rgba(255, 255, 255, 0.8); /* 发光效果 */
-        background-color: rgba(0, 32, 67, 0.544); /* 背景颜色和透明度 */
+        background-color: transparent; 
         color: white; /* 字体颜色 */
         font-family: Arial, Helvetica, sans-serif;
         font-size: 1em;
+        font-weight: bold;
         padding: 5px 15px;
-        &:hover {
-            opacity: 1; /* 悬停时完全不透明 */
-        }
+        // &:hover {
+        //     opacity: 1; 
+        // }
     }
 }
 
+.custom-dropdown-menu {
+    background: rgb(255, 255, 255); /* 半透明蓝色背景 */
+    backdrop-filter: blur(10px); 
+    border: 1px solid rgba(255, 255, 255, 0.3); /* 半透明白色边框 */
+    
+    
+}
 
+.custom-dropdown-item {
+    color: white; /* 字体颜色 */
+    padding: 10px 20px;
+    background: transparent;
+    &:hover {
+        background: rgba(0, 123, 255, 0.3); 
+    }
+}
 
 .title {
     width: 830px;
@@ -459,7 +544,7 @@ background: transparent;
 }
 .right-top1 {
     width: 160px;
-    height: 40px;
+    height: 40px; 
     margin-top: 20px;
     margin-left: 10px;
     background-image: url('../assets/bg_title@2x.png');
@@ -476,6 +561,7 @@ background: transparent;
     margin-top: -22px;
     width: 90px;
     height: 30px;
+    // background-color: #FFA500;
     .span1 {
         font-family: 'font2_style';
         font-size: 1.25em;
@@ -490,6 +576,262 @@ background: transparent;
     background-image: url('../assets/icon_yujing.png');
     // background-color: #FFA500;
     background-size: contain;
+}
+
+.little-icons {
+    width: 20px;
+    height: 70px;
+    top: 160px;
+    right: 190px;
+    position: fixed;
+    // background-color: #FFA500;
+    div {
+        width: 18px;
+        height: 18px;
+        
+        // background-color: aliceblue;
+        margin-top: 4px;
+        margin-left: -6px;
+        background-image: url('../assets/4.png');
+        background-size: contain;
+    }
+
+}
+
+.yujing-list {
+    width: 150px;
+    height: 70px;
+    // background-color: #FFA500;
+    top: 160px;
+    right: 30px;
+    position: fixed;
+    .span1 {
+        font-size: 13px;
+        color: white;
+        font-weight: bold;
+    }
+    .span2 {
+        margin-left: 15px;
+        font-weight: bold;
+        color: rgb(255, 213, 0);
+    }
+}
+
+.right-top2 {
+    width: 160px;
+    height: 40px;
+    top: 255px;
+    right: 164px;
+    position: fixed;
+    background-image: url('../assets/bg_title@2x.png');
+}
+
+.right-icon2 {
+    width: 18px;
+    height: 18px;
+    top: 265px;
+    right: 299px; 
+    position: fixed;
+    background-image: url('../assets/6.png');
+    // background-color: #fff;
+}
+
+
+.right-title2 {
+    margin-left: 50px;
+    margin-top: 4px;
+    width: 90px;
+    height: 30px;
+    // background-color: #FFA500;
+    .span1 {
+        font-family: 'font2_style';
+        font-size: 1.25em;
+        text-shadow: 0 0 10px white;
+        color: white;
+    }
+}
+
+.right-icon3 {
+    width: 95px;
+    height: 95px;
+    margin-top: 20px;
+    background-image: url('../assets/icon_chuli.png');
+    // background-color: #FFA500;
+    background-size: contain;
+}
+
+
+.little-icons2 {
+    width: 20px;
+    height: 70px;
+    top: 320px;
+    right: 190px;
+    position: fixed;
+    // background-color: #FFA500;
+    div {
+        width: 18px;
+        height: 18px;
+        
+        // background-color: aliceblue;
+        margin-top: 4px;
+        margin-left: -6px;
+        background-image: url('../assets/4.png');
+        background-size: contain;
+    }
+
+}
+
+.yujing-list2 {
+    width: 150px;
+    height: 70px;
+    // background-color: #FFA500;
+    top: 319px;
+    right: 30px;
+    position: fixed;
+    
+    .span1 {
+        font-size: 13px;
+        color: white;
+        font-weight: bold;
+    }
+    .span2 {
+        margin-left: 15px;
+        font-weight: bold;
+        color: rgb(255, 213, 0);
+    }
+}
+
+
+.right-top3 {
+    width: 160px;
+    height: 40px;
+    top: 420px;
+    right: 164px;
+    position: fixed;
+    background-image: url('../assets/bg_title@2x.png');
+}
+
+.right-icon4 {
+    width: 18px;
+    height: 18px;
+    top: 430px;
+    right: 299px; 
+    position: fixed;
+    background-image: url('../assets/6.png');
+    // background-color: #fff;
+}
+
+.right-title3 {
+    margin-left: 50px;
+    margin-top: 4px;
+    width: 105px;
+    height: 30px;
+    // background-color: #FFA500;
+    .span1 {
+        font-family: 'font2_style';
+        font-size: 1.25em;
+        text-shadow: 0 0 10px white;
+        color: white;
+    }
+}
+
+
+.calendar {
+    margin-top: 10px;
+    margin-left: -3px;
+    width: 300px;
+    height: 300px;
+    // background-color: #FFA500;
+}
+
+
+
+::v-deep .el-calendar {
+   
+    background-color: transparent;
+    // color: black;
+    
+  padding-right: 8px;
+  .el-calendar__header {
+    // .el-calendar__title {
+    //     position: absolute;
+    //     left: 50%;
+    //     transform: translate(-50%);
+    //     font-size: 17px;
+    //     color: aqua;
+    // }
+    font-size: 13px;
+    // font-weight: 700;
+    color: aqua;
+    line-height: 10px;
+    border-bottom: 0;
+  }
+  .el-calendar__body {
+    padding: 0px 0px 20px;
+    
+    thead {
+      th {
+        color: aqua;
+        font-weight: bold;
+        font-size: 12px;
+      }
+    }
+    .el-calendar-table__row {
+      td {
+        border: 0;
+        height: unset;
+        border-radius: 50%;
+        font-size: 12px;
+        
+      }
+      .el-calendar-day {
+        height: 30px;
+        line-height: 35px;
+        padding: 0;
+        span {
+          height: 24px;
+          line-height: 24px;
+          width: 24px;
+          text-align: center;
+          border-radius: 50%;
+          background-color: aqua;
+          display: inline-block;
+          margin-left: 10px;
+        }
+        &:hover {
+          background-color: unset;
+        //   span {
+        //     background-color: #7f2ca91a;
+        //     color: #7f2ca9;
+        //   }
+        }
+      }
+      .is-selected {
+        background-color: unset;
+        // .el-calendar-day {
+        //   span {
+        //     background-color: #7f2ca9;
+        //     color: #ffffff;
+        //   }
+        // }
+      }
+    }
+  }
+//   .is-point {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: flex-end;
+//     align-items: center;
+//     margin: 0;
+//     i {
+//       margin-top: 1px;
+//       display: inline-block;
+//       width: 6px;
+//       height: 6px;
+//       background: #ff0000;
+//       border-radius: 50%;
+//     }
+//   }
 }
 
 </style>

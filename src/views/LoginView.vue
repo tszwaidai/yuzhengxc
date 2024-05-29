@@ -49,7 +49,8 @@ export default {
 
 <style lang="scss" scoped>
 @import url(/src/assets/font/font.css);
-@import url('../assets/font/font2.css');
+@import url(/src/assets/font/font2.css);
+
 
 
 .login {
