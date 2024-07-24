@@ -31,10 +31,10 @@
 
     <!-- 地图功能 -->
     <div class="map-op">
-        <el-checkbox v-model="checked1" label="点位显示" size="large" class="custom-checkbox"/>
-        <el-checkbox v-model="checked2" label="覆盖范围" size="large" class="custom-checkbox"/>
-        <el-checkbox v-model="checked3" label="事件显示" size="large" class="custom-checkbox"/>
-        <el-checkbox v-model="checked4" label="热力图" size="large" class="custom-checkbox"/>
+        <el-checkbox v-model="checked1" label="点位显示" size="large" class="custom-checkbox" @change="toggleMarkers"/>
+        <el-checkbox v-model="checked2" label="覆盖范围" size="large" class="custom-checkbox" @change="toggleCircles"/>
+        <el-checkbox v-model="checked3" label="事件显示" size="large" class="custom-checkbox" @change="toggleEventMarkers"/>
+        <el-checkbox v-model="checked4" label="热力图" size="large" class="custom-checkbox" @change="toggleHeatmap"/>
     </div>
 
     <!-- 左侧栏 -->
@@ -223,7 +223,6 @@
     
 </template>
 
-
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { ElTree, ElDropdown, ElDropdownItem, ElButton, ElInput, ElIcon } from 'element-plus';
@@ -239,89 +238,102 @@ const filterText = ref('');
 const treeRef = ref(null);
 const showWarning = ref(false);
 const defaultProps = {
-  children: 'children',
-  label: 'label',
+    children: 'children',
+    label: 'label',
 };
 
 watch(filterText, (val) => {
-  if (treeRef.value) {
-    treeRef.value.filter(val);
-  }
+    if (treeRef.value) {
+        treeRef.value.filter(val);
+    }
 });
 
 const filterNode = (value, data) => {
-  if (!value) return true;
-  return data.label.includes(value);
+    if (!value) return true;
+    return data.label.includes(value);
 };
 
 const data = [
-  {
-    id: 1,
-    label: 'Level one 1',
-    children: [
-      {
-        id: 4,
-        label: 'Level two 1-1',
+    {
+        id: 1,
+        label: 'Level one 1',
         children: [
-          {
-            id: 9,
-            label: 'Level three 1-1-1',
-          },
-          {
-            id: 10,
-            label: 'Level three 1-1-2',
-          },
+            {
+                id: 4,
+                label: 'Level two 1-1',
+                children: [
+                    {
+                        id: 9,
+                        label: 'Level three 1-1-1',
+                    },
+                    {
+                        id: 10,
+                        label: 'Level three 1-1-2',
+                    },
+                ],
+            },
         ],
-      },
-    ],
-  },
-  {
-    id: 2,
-    label: 'Level one 2',
-    children: [
-      {
-        id: 5,
-        label: 'Level two 2-1',
-      },
-      {
-        id: 6,
-        label: 'Level two 2-2',
-      },
-    ],
-  },
-  {
-    id: 3,
-    label: 'Level one 3',
-    children: [
-      {
-        id: 7,
-        label: 'Level two 3-1',
-      },
-      {
-        id: 8,
-        label: 'Level two 3-2',
-      },
-    ],
-  },
+    },
+    {
+        id: 2,
+        label: 'Level one 2',
+        children: [
+            {
+                id: 5,
+                label: 'Level two 2-1',
+            },
+            {
+                id: 6,
+                label: 'Level two 2-2',
+            },
+        ],
+    },
+    {
+        id: 3,
+        label: 'Level one 3',
+        children: [
+            {
+                id: 7,
+                label: 'Level two 3-1',
+            },
+            {
+                id: 8,
+                label: 'Level two 3-2',
+            },
+        ],
+    },
 ];
 
 const toggleView = () => {
-  showWarning.value = !showWarning.value;
+    showWarning.value = !showWarning.value;
 };
 
 const handleCommand = (command) => {
-  if (command === 'logout') {
-    logout();
-  }
+    if (command === 'logout') {
+        logout();
+    }
 };
 
 const logout = () => {
-  // 退出登录的逻辑，例如跳转到登录页
-  window.location.href = '/';
+    // 退出登录的逻辑，例如跳转到登录页
+    window.location.href = '/';
 };
 
+// 复选框
+const checked1 = ref(true);
+const checked2 = ref(true);
+const checked3 = ref(true);
+const checked4 = ref(true);
+
+let heatmap;
+let map;
+const markers = ref([]);
+const circles = ref([]);
+const eventMarkers = ref([]);
+
+
 // 标注监控地点
-const markers = [
+const markersData = [
     { lng: 121.455151, lat: 29.758089 },
     { lng: 121.776341, lat: 29.691244 },
     { lng: 121.61679, lat: 29.599672 },
@@ -335,133 +347,198 @@ const markers = [
     { lng: 121.397203, lat: 29.940453 },
     { lng: 121.440515, lat: 29.93285 },
     { lng: 121.459705, lat: 29.792925 },
-    { lng: 121.440879, lat: 29.485349},
-    { lng: 121.379595, lat: 29.950791},
-    { lng: 121.461836, lat: 29.491619},
-    { lng: 121.536537, lat: 29.458663},
+    { lng: 121.440879, lat: 29.485349 },
+    { lng: 121.379595, lat: 29.950791 },
+    { lng: 121.461836, lat: 29.491619 },
+    { lng: 121.536537, lat: 29.458663 },
 ]
 
 // 标注事件地点
-const markers1 = [
-    { lng: 121.440515, lat: 29.93285 },
-    { lng: 121.459705, lat: 29.792925 },
-    { lng: 121.440879, lat: 29.485349},
-    { lng: 121.379595, lat: 29.950791},
-    { lng: 121.461836, lat: 29.491619},
-    { lng: 121.536537, lat: 29.458663},
+const eventData = [
+    { lng: 121.455151, lat: 29.758089 },
+    { lng: 121.776341, lat: 29.691244 },
+    { lng: 121.61679, lat: 29.599672 },
+    { lng: 121.708552, lat: 29.56876 },
+    { lng: 121.525966, lat: 29.531936 },
+    { lng: 121.552093, lat: 29.526567 },
+    { lng: 121.746391, lat: 29.609663 },
+    { lng: 121.947632, lat: 29.632349 },
+    { lng: 121.466758, lat: 29.910718 },
+    { lng: 121.515009, lat: 29.896444 },
+
 ]
 // 热力图数据
 const heatmapData = [
-  { lng: 121.455151, lat: 29.758089, count: 100 },
-  { lng: 121.776341, lat: 29.691244, count: 30 },
-  { lng: 121.61679, lat: 29.599672, count: 20 },
-  { lng: 121.708552, lat: 29.56876, count: 250 },
-  { lng: 121.525966, lat: 29.531936, count: 30 },
-  { lng: 121.552093, lat: 29.526567, count: 350 },
-  { lng: 121.746391, lat: 29.609663, count: 40 },
-  { lng: 121.947632, lat: 29.632349, count: 45 },
-  { lng: 121.466758, lat: 29.910718, count: 50 },
-  { lng: 121.515009, lat: 29.896444, count: 150 },
+    { lng: 121.455151, lat: 29.758089, count: 100 },
+    { lng: 121.776341, lat: 29.691244, count: 30 },
+    { lng: 121.61679, lat: 29.599672, count: 20 },
+    { lng: 121.708552, lat: 29.56876, count: 250 },
+    { lng: 121.525966, lat: 29.531936, count: 30 },
+    { lng: 121.552093, lat: 29.526567, count: 350 },
+    { lng: 121.746391, lat: 29.609663, count: 40 },
+    { lng: 121.947632, lat: 29.632349, count: 45 },
+    { lng: 121.466758, lat: 29.910718, count: 50 },
+    { lng: 121.515009, lat: 29.896444, count: 150 },
 ];
 
+// 地图调用
 onMounted(() => {
-  window._AMapSecurityConfig = {
-    securityJsCode: '4b3d691434564bd8215f3b8f0ee44e3e',
-  };
-  AMapLoader.load({
-    key: 'f69f1f816ed2bee14922a684b6e8bf82',
-    version: '2.0',
-    plugins: ['AMap.HeatMap'], // 加载热力图插件
-  })
-    .then((AMap) => {
-      // 初始化地图，并设置中心为宁波，使用卫星图层
-      const map = new AMap.Map('container', {
-        center: [121.549792, 29.868388],
-        zoom: 13,
-        layers: [
-          new AMap.TileLayer.Satellite(),
-          new AMap.TileLayer.RoadNet(),
-        
-        ]
-      });
-        // 将地图视图限制在宁波市
-        map.setCity('宁波');
-
-        // 添加多个标记
-        markers.forEach((markerPosition) => {
-        const marker = new AMap.Marker({
-            position: [markerPosition.lng, markerPosition.lat],
-        });
-        map.add(marker);
-
-        // 添加圆形覆盖物
-        const circle = new AMap.Circle({
-          center: [121.440515, 29.93285], // 圆心位置
-          radius: 20000, // 半径，单位：米
-          fillColor: '#6bab6e', // 圆形填充颜色 (绿色)
-          strokeColor: '#008000', // 圆形边框颜色 (绿色)
-          fillOpacity: 0.05, // 圆形填充透明度
-          strokeWeight: 1, // 圆形边框宽度
-        });
-        map.add(circle);
-        // 添加圆形覆盖物
-        const circle1 = new AMap.Circle({
-          center: [121.461836, 29.491619], // 圆心位置
-          radius: 20000, // 半径，单位：米
-          fillColor: '#6bab6e', // 圆形填充颜色
-          strokeColor: '#008000', // 圆形边框颜色
-          fillOpacity: 0.05, // 圆形填充透明度
-          strokeWeight: 1, // 圆形边框宽度
-        });
-        map.add(circle1);
-        // 添加圆形覆盖物
-        const circle2 = new AMap.Circle({
-          center: [121.746391, 29.609663], // 圆心位置
-          radius: 20000, // 半径，单位：米
-          fillColor: '#6bab6e', // 圆形填充颜色
-          strokeColor: '#008000', // 圆形边框颜色
-          fillOpacity: 0.05, // 圆形填充透明度
-          strokeWeight: 1, // 圆形边框宽度
-        });
-        map.add(circle2)
-      });
-      
-      // 添加多个黄色标记
-      markers1.forEach((markerPosition) => {
-        const marker = new AMap.Marker({
-          position: [markerPosition.lng, markerPosition.lat],
-          icon: new AMap.Icon({
-            image: yellowMarker, // 使用导入的本地图片
-            size: new AMap.Size(30, 30),
-            imageSize: new AMap.Size(30,30)
-          }),
-        });
-        map.add(marker);
-      });
-
-      // 初始化并添加热力图
-      const heatmap = new AMap.HeatMap(map, {
-        radius: 60, // 给定半径
-        opacity: [0, 0.8],
-        gradient: {
-          0.5: 'blue',
-          0.65: 'rgb(117,211,248)',
-          0.7: 'rgb(0, 255, 0)',
-          0.9: '#ffea00',
-          1.0: 'red',
-        },
-      });
-
-      // 设置热力图数据
-      heatmap.setDataSet({
-        data: heatmapData,
-        max: 100,
-      });
+    window._AMapSecurityConfig = {
+        securityJsCode: '4b3d691434564bd8215f3b8f0ee44e3e',
+    };
+    AMapLoader.load({
+        key: 'f69f1f816ed2bee14922a684b6e8bf82',
+        version: '2.0',
+        plugins: ['AMap.HeatMap'], // 加载热力图插件
     })
-    .catch((e) => {
-      console.error(e); // 加载错误提示
-    });
+        .then((AMap) => {
+            // 初始化地图，并设置中心为宁波，使用卫星图层
+             map = new AMap.Map('container', {
+                center: [121.549792, 29.868388],
+                zoom: 13,
+                layers: [
+                    new AMap.TileLayer.Satellite(),
+                    new AMap.TileLayer.RoadNet(),
+
+                ]
+            });
+            // 将地图视图限制在宁波市
+            map.setCity('宁波');
+
+            // 添加多个标记
+            markersData.forEach((markerPosition) => {
+                const marker = new AMap.Marker({
+                    position: [markerPosition.lng, markerPosition.lat],
+                });
+                
+                // map.add(marker);
+                markers.value.push(marker);
+            });
+
+            // 添加圆形覆盖物
+            const circle = new AMap.Circle({
+                    center: [121.440515, 29.93285], // 圆心位置
+                    radius: 20000, // 半径，单位：米
+                    fillColor: '#6bab6e', // 圆形填充颜色 (绿色)
+                    strokeColor: '#008000', // 圆形边框颜色 (绿色)
+                    fillOpacity: 0.5, // 圆形填充透明度
+                    strokeWeight: 1, // 圆形边框宽度
+            });
+            circles.value.push(circle);
+            // map.add(circle);
+
+            // 添加圆形覆盖物
+            const circle1 = new AMap.Circle({
+                center: [121.461836, 29.491619], // 圆心位置
+                radius: 20000, // 半径，单位：米
+                fillColor: '#6bab6e', // 圆形填充颜色
+                strokeColor: '#008000', // 圆形边框颜色
+                fillOpacity: 0.5, // 圆形填充透明度
+                strokeWeight: 1, // 圆形边框宽度
+            });
+            circles.value.push(circle1);
+            // map.add(circle1);
+
+            // 添加圆形覆盖物
+            const circle2 = new AMap.Circle({
+                center: [121.746391, 29.609663], // 圆心位置
+                radius: 20000, // 半径，单位：米
+                fillColor: '#6bab6e', // 圆形填充颜色
+                strokeColor: '#008000', // 圆形边框颜色
+                fillOpacity: 0.5, // 圆形填充透明度
+                strokeWeight: 1, // 圆形边框宽度
+            });
+            circles.value.push(circle2);
+            // map.add(circle2)
+
+            // 添加多个事件标记
+            eventData.forEach((markerPosition) => {
+                const eventMarker = new AMap.Marker({
+                    position: [markerPosition.lng, markerPosition.lat],
+                    icon: new AMap.Icon({
+                        image: yellowMarker, // 使用导入的本地图片
+                        size: new AMap.Size(30, 30),
+                        imageSize: new AMap.Size(30, 30)
+                    }),
+                });
+                // map.add(marker);
+                eventMarkers.value.push(eventMarker);
+            });
+
+            // 初始化并添加热力图
+            heatmap = new AMap.HeatMap(map, {
+                radius: 80, // 给定半径
+                opacity: [0, 0.8],
+                gradient: {
+                    0.5: 'blue',
+                    0.65: 'rgb(117,211,248)',
+                    0.7: 'rgb(0, 255, 0)',
+                    0.9: '#ffea00',
+                    1.0: 'red',
+                },
+            });
+
+            // 设置热力图数据
+            heatmap.setDataSet({
+                data: heatmapData,
+                max: 100,
+            });
+            // 初始化时更新地图图层
+            updateMapLayers();
+
+        })
+        .catch((e) => {
+            console.error(e); // 加载错误提示
+        });
+        
 });
+
+function updateMapLayers() {
+  toggleMarkers();
+  toggleCircles();
+  toggleEventMarkers();
+  toggleHeatmap();
+}
+
+// 监控标记选项
+function toggleMarkers() {
+  if (checked1.value) {
+    markers.value.forEach((marker) => map.add(marker));
+  } else {
+    markers.value.forEach((marker) => map.remove(marker));
+  }
+}
+
+function toggleCircles() {
+  if (checked2.value) {
+    circles.value.forEach((circle) => map.add(circle));
+  } else {
+    circles.value.forEach((circle) => map.remove(circle));
+  }
+}
+
+// 事件标记
+function toggleEventMarkers() {
+  if (checked3.value) {
+    eventMarkers.value.forEach((eventMarker) => map.add(eventMarker));
+  } else {
+    eventMarkers.value.forEach((eventMarker) => map.remove(eventMarker));
+  }
+}
+
+function toggleHeatmap() {
+  if (checked4.value) {
+    heatmap.setDataSet({
+      data: heatmapData,
+      max: 100,
+    });
+  } else {
+    heatmap.setDataSet({
+      data: [],
+    });
+  }
+}
+
 </script>
 
 <style lang="scss" scoped>
