@@ -29,7 +29,7 @@
 
     </div>
 
-    <!-- 地图功能 -->
+    <!-- 多选框功能 -->
     <div class="map-op">
         <el-checkbox v-model="checked1" label="点位显示" size="large" class="custom-checkbox" @change="toggleMarkers"/>
         <el-checkbox v-model="checked2" label="覆盖范围" size="large" class="custom-checkbox" @change="toggleCircles"/>
@@ -220,6 +220,19 @@
 
     </div>
 
+    <!-- 监控详情弹窗 -->
+    <!-- <div class="jiankongDesc">
+        <div style="margin-top: 40px;margin-left: 25px;color: aqua;">
+            <div>点位名称：</div>
+            <div>点位状态：</div>
+            <div>所属区域：</div>
+            <div>负责人：</div>
+            <div>点位详情：
+                <el-button type="text">查看详情</el-button>
+            </div>
+        </div>
+    </div> -->
+
     
 </template>
 
@@ -229,6 +242,8 @@ import { ElTree, ElDropdown, ElDropdownItem, ElButton, ElInput, ElIcon } from 'e
 import { ArrowDown } from '@element-plus/icons-vue';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import yellowMarker from '@/assets/dingwei.png'
+import infobg from '@/assets/bg_dianwei@2x.png'
+import fork from '@/assets/fork.png'
 
 const value = ref(null);
 const value1 = ref(new Date());
@@ -327,6 +342,7 @@ const checked4 = ref(true);
 
 let heatmap;
 let map;
+let infoWindow;
 const markers = ref([]);
 const circles = ref([]);
 const eventMarkers = ref([]);
@@ -334,7 +350,7 @@ const eventMarkers = ref([]);
 
 // 标注监控地点
 const markersData = [
-    { lng: 121.455151, lat: 29.758089 },
+    { lng: 121.455151, lat: 29.758089, name: '奉化方桥朱应村', status: '正常', region: '奉化区/内河', manager: '暂无' },
     { lng: 121.776341, lat: 29.691244 },
     { lng: 121.61679, lat: 29.599672 },
     { lng: 121.708552, lat: 29.56876 },
@@ -405,13 +421,27 @@ onMounted(() => {
             // 将地图视图限制在宁波市
             map.setCity('宁波');
 
+            // 创建自定义信息框
+            infoWindow = new AMap.InfoWindow({
+                isCustom: true, // 使用自定义窗体
+                autoMove: true,
+                offset: new AMap.Pixel(0, -70),
+                content: '' // 初始化为空
+            });
+
             // 添加多个标记
             markersData.forEach((markerPosition) => {
                 const marker = new AMap.Marker({
                     position: [markerPosition.lng, markerPosition.lat],
                 });
                 
-                // map.add(marker);
+                // 添加点击事件
+                marker.on('click', () => {
+                    infoWindow.setContent(createCustomInfoWindow(markerPosition));
+                    infoWindow.open(map, marker.getPosition());
+                });
+
+                map.add(marker);
                 markers.value.push(marker);
             });
 
@@ -493,6 +523,36 @@ onMounted(() => {
         
 });
 
+// 信息窗体样式
+function createCustomInfoWindow(markerData) {
+  const infoImage = infobg;
+  const forkImage = fork;
+  return `
+    <div style="width: 281px;
+    height: 200px;
+    background: url('${infoImage}');
+    background-size: contain;">
+      <div style="margin-top: 40px; margin-left: 25px; color: aqua;padding: 40px 0 0 5px">
+        <div>点位名称：<span style="color:white">${markerData.name || '未知'}</span></div>
+        <div>点位状态：<span style="color:white">${markerData.status || '未知'}</span></div>
+        <div>所属区域：<span style="color:white">${markerData.region || '未知'}</span></div>
+        <div>负责人：<span style="color:white">${markerData.manager || '未知'}</span></div>
+        <div>点位详情：
+          <el-button type="text" style="color:red" >查看详情</el-button>
+        </div>
+      </div>
+      <div style="margin-left: 240px; margin-top: -130px; width:15px; height:15px; background: url('${forkImage}');background-size: contain;" onclick="closeInfoWindow()" ></div>
+    </div>
+  `;
+}
+
+window.closeInfoWindow = function () {
+  if (infoWindow) {
+    infoWindow.close();
+  }
+};
+
+
 function updateMapLayers() {
   toggleMarkers();
   toggleCircles();
@@ -544,13 +604,20 @@ function toggleHeatmap() {
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
 
-
 // 地图
 .bm-view {
     margin-left: -200px;
     width: 1600px;
     height: 800px;
 }
+
+.jiankongDesc {
+    width: 281px;
+    height: 200px;
+    background: url('../assets/bg_dianwei@2x.png');
+    background-size: contain;
+}
+
 .legend {
   display: flex;
   justify-content: space-around;
@@ -573,12 +640,7 @@ function toggleHeatmap() {
   position: absolute;
   display: inline-block;
 }
-// .color-box1 {
-//     width: 20px;
-//     height: 7px;
-//     border-radius: 2px;
-    
-// }
+
 .blue {
   background-color: aqua;
 }
