@@ -220,20 +220,6 @@
 
     </div>
 
-    <!-- 监控详情弹窗 -->
-    <!-- <div class="jiankongDesc">
-        <div style="margin-top: 40px;margin-left: 25px;color: aqua;">
-            <div>点位名称：</div>
-            <div>点位状态：</div>
-            <div>所属区域：</div>
-            <div>负责人：</div>
-            <div>点位详情：
-                <el-button type="text">查看详情</el-button>
-            </div>
-        </div>
-    </div> -->
-
-    
 </template>
 
 <script setup>
@@ -774,7 +760,7 @@ function toggleHeatmap() {
     .el-button {
         font-family: 'font2_style';
         font-size: 2.25em;
-        text-shadow: 0 0 10px white;
+        text-shadow: 0 0 25px rgb(255, 255, 255);
         background-color: transparent;
         color: white;
         margin-top: 8px;
@@ -790,13 +776,13 @@ function toggleHeatmap() {
 
 // 按钮颜色变化
 .el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):hover {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
+    background-image: linear-gradient(to bottom, #ffffff, #ffb300);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):active {
-    background: linear-gradient(45deg, #FFD700, #FFA500);
+    background-image: linear-gradient(to bottom, #ffffff, #ffb300);
     -webkit-background-clip: text;
     // -webkit-text-fill-color: transparent; 
 }
