@@ -221,14 +221,27 @@
     </div>
 
     <!-- 监控点位的查看详情 --> 
-    <el-dialog v-model="dialogVisible" title="Shipping address" width="900" height="800">
-    <el-table :data="gridData">
-      <el-table-column property="date" label="Date" width="150" />
-      <el-table-column property="name" label="Name" width="200" />
-      <el-table-column property="address" label="Address" />
-    </el-table>
-  </el-dialog>
-    
+    <div>
+        <el-dialog v-model="dialogVisible" title="点位详情" width="900" >
+            <template #header>
+            <div class="custom-header">
+                <img src="../assets/ship.png"  class="header-image">
+                <span class="header-title">点位详情</span>
+                <div>
+                    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+                        <el-tab-pane label="实时监控" name="first" ></el-tab-pane>
+                        <el-tab-pane label="预警事件" name="second"></el-tab-pane>
+                    </el-tabs>
+                </div>
+            </div>
+            </template>
+            <div>
+                hhh
+            </div>
+        </el-dialog>
+    </div> 
+
+     
 
 </template>
 
@@ -244,28 +257,6 @@ import fork from '@/assets/fork.png'
 
 const dialogVisible = ref(false);
 
-const gridData = [
-  {
-    date: '2016-05-02',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-  {
-    date: '2016-05-04',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-  {
-    date: '2016-05-01',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-  {
-    date: '2016-05-03',
-    name: 'John Smith',
-    address: 'No.1518,  Jinshajiang Road, Putuo District',
-  },
-]
 
 const value = ref(null);
 const value1 = ref(new Date());
@@ -629,11 +620,40 @@ function toggleHeatmap() {
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
 
-// 地图
-.bm-view {
-    margin-left: -200px;
-    width: 1600px;
-    height: 800px;
+
+:deep(.el-dialog) {
+    padding: 0;
+}
+:deep(.el-dialog__header) {
+  height: 50px;
+  background-color: #10468d; /* 头部颜色 */
+  color: white;
+}
+:deep(.el-dialog__body) {
+  height: 500px;  
+  background-color: #15325d; /* 头部颜色 */
+  color: white;
+}
+
+.header-title {
+    font-family: 'font2_style';
+    color: white;
+    text-shadow: 0 0 10px #00ffff;
+    font-size: 28px;
+    margin-left: 5px;
+    position: relative;
+    top: 4px;
+}
+
+.header-image {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.custom-header {
+    display: flex;
+    // align-items: center;
 }
 
 .jiankongDesc {
@@ -815,13 +835,13 @@ function toggleHeatmap() {
 
 // 按钮颜色变化
 .el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):hover {
-    background-image: linear-gradient(to bottom, #ffffff, #ff9d00);
+    background-image: linear-gradient(to bottom, #ffffff, #fc9e2b);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):active {
-    background-image: linear-gradient(to bottom, #ffffff, #ff9d00);
+    background-image: linear-gradient(to bottom, #ffffff, #fc9e2b);
     -webkit-background-clip: text;
     // -webkit-text-fill-color: transparent; 
 }
@@ -1286,6 +1306,11 @@ function toggleHeatmap() {
 </style>
 
 <style lang="css">
+.custom-dialog::v-deep .el-dialog__header {
+  background-color: #f56c6c; /* 头部颜色 */
+  color: white;
+}
+
 /* 使用更高优先级的选择器 */
 ::v-deep .el-input__inner {
   background: transparent;
