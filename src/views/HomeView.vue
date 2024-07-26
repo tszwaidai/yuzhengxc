@@ -220,16 +220,52 @@
 
     </div>
 
+    <!-- 监控点位的查看详情 --> 
+    <el-dialog v-model="dialogVisible" title="Shipping address" width="900" height="800">
+    <el-table :data="gridData">
+      <el-table-column property="date" label="Date" width="150" />
+      <el-table-column property="name" label="Name" width="200" />
+      <el-table-column property="address" label="Address" />
+    </el-table>
+  </el-dialog>
+    
+
 </template>
 
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import { ElTree, ElDropdown, ElDropdownItem, ElButton, ElInput, ElIcon } from 'element-plus';
+import { ElDialog } from 'element-plus';
 import { ArrowDown } from '@element-plus/icons-vue';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import yellowMarker from '@/assets/dingwei.png'
 import infobg from '@/assets/bg_dianwei@2x.png'
 import fork from '@/assets/fork.png'
+
+const dialogVisible = ref(false);
+
+const gridData = [
+  {
+    date: '2016-05-02',
+    name: 'John Smith',
+    address: 'No.1518,  Jinshajiang Road, Putuo District',
+  },
+  {
+    date: '2016-05-04',
+    name: 'John Smith',
+    address: 'No.1518,  Jinshajiang Road, Putuo District',
+  },
+  {
+    date: '2016-05-01',
+    name: 'John Smith',
+    address: 'No.1518,  Jinshajiang Road, Putuo District',
+  },
+  {
+    date: '2016-05-03',
+    name: 'John Smith',
+    address: 'No.1518,  Jinshajiang Road, Putuo District',
+  },
+]
 
 const value = ref(null);
 const value1 = ref(new Date());
@@ -238,6 +274,7 @@ const size = ref('medium'); // 或 'small', 'large', 根据需要调整
 const filterText = ref('');
 const treeRef = ref(null);
 const showWarning = ref(false);
+
 const defaultProps = {
     children: 'children',
     label: 'label',
@@ -513,18 +550,16 @@ onMounted(() => {
 function createCustomInfoWindow(markerData) {
   const infoImage = infobg;
   const forkImage = fork;
+
   return `
-    <div style="width: 281px;
-    height: 200px;
-    background: url('${infoImage}');
-    background-size: contain;">
+    <div style="width: 281px;height: 200px;background: url('${infoImage}');background-size: contain;">
       <div style="margin-top: 40px; margin-left: 25px; color: aqua;padding: 40px 0 0 5px">
-        <div>点位名称：<span style="color:white">${markerData.name || '未知'}</span></div>
+        <div>点位名称：<span style="color:white">${markerData.name || '未知'}</span></div>  
         <div>点位状态：<span style="color:white">${markerData.status || '未知'}</span></div>
         <div>所属区域：<span style="color:white">${markerData.region || '未知'}</span></div>
         <div>负责人：<span style="color:white">${markerData.manager || '未知'}</span></div>
         <div>点位详情：
-          <el-button type="text" style="color:red" >查看详情</el-button>
+          <span style="color:red" onclick="show()">查看详情</span>
         </div>
       </div>
       <div style="margin-left: 240px; margin-top: -130px; width:15px; height:15px; background: url('${forkImage}');background-size: contain;" onclick="closeInfoWindow()" ></div>
@@ -532,6 +567,10 @@ function createCustomInfoWindow(markerData) {
   `;
 }
 
+
+window.show = function () {
+    dialogVisible.value = true;
+}
 window.closeInfoWindow = function () {
   if (infoWindow) {
     infoWindow.close();
@@ -776,13 +815,13 @@ function toggleHeatmap() {
 
 // 按钮颜色变化
 .el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):hover {
-    background-image: linear-gradient(to bottom, #ffffff, #ffb300);
+    background-image: linear-gradient(to bottom, #ffffff, #ff9d00);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):active {
-    background-image: linear-gradient(to bottom, #ffffff, #ffb300);
+    background-image: linear-gradient(to bottom, #ffffff, #ff9d00);
     -webkit-background-clip: text;
     // -webkit-text-fill-color: transparent; 
 }
