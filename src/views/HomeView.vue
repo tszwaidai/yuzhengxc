@@ -228,7 +228,7 @@
                 <img src="../assets/ship.png"  class="header-image">
                 <span class="header-title">点位详情</span>
                 <div>
-                    <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+                    <el-tabs v-model="activeName" :stretch="false" style="color: white; margin-top: 10px;margin-left: 540px;caret-color: transparent;" @tab-click="handleClick">
                         <el-tab-pane label="实时监控" name="first" ></el-tab-pane>
                         <el-tab-pane label="预警事件" name="second"></el-tab-pane>
                     </el-tabs>
@@ -236,12 +236,11 @@
             </div>
             </template>
             <div>
-                hhh
+               <img src="../assets/监控3.png" class="body-image"> 
+               <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;">{{ currentName }}</span>
             </div>
         </el-dialog>
-    </div> 
-
-     
+    </div>      
 
 </template>
 
@@ -256,6 +255,8 @@ import infobg from '@/assets/bg_dianwei@2x.png'
 import fork from '@/assets/fork.png'
 
 const dialogVisible = ref(false);
+const currentName = ref(''); //点位详情的地名
+const activeName = ref('first'); //弹窗默认点击实时监控
 
 
 const value = ref(null);
@@ -451,6 +452,7 @@ onMounted(() => {
                 
                 // 添加点击事件
                 marker.on('click', () => {
+                    currentName.value = markerPosition.name || '未知';
                     infoWindow.setContent(createCustomInfoWindow(markerPosition));
                     infoWindow.open(map, marker.getPosition());
                 });
@@ -619,6 +621,27 @@ function toggleHeatmap() {
 
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
+
+.body-image {
+    margin-top: 5px;
+    margin-left: 15px;
+    width: 30px;
+    height: 30px;
+}
+
+// 标签
+::v-deep .el-tabs__item {
+    color: white;
+}
+::v-deep .el-tabs__item.is-active {
+    color: aqua;
+}
+::v-deep .el-tabs__nav-wrap::after {
+    height: 0;
+}
+::v-deep .el-tabs__active-bar {
+    background-color: aqua;
+}
 
 
 :deep(.el-dialog) {
