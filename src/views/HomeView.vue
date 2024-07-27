@@ -7,10 +7,14 @@
         <span>智慧渔政视频预警系统</span>
 
         <div class="title">
-            <el-button type="text" plain>人机联防</el-button>
-            <el-button type="text" plain>预警事件</el-button>
-            <el-button type="text" plain>视频广场</el-button>
-            <el-button type="text" plain>态势分析</el-button>
+            <el-button type="text" :class="{ 'active-button': activeButton === 'humanMachine' }"
+            @click="setActiveButton('humanMachine')">人机联防</el-button>
+            <el-button type="text" :class="{ 'active-button': activeButton === 'warningEvents' }"
+            @click="setActiveButton('warningEvents')">预警事件</el-button>
+            <el-button type="text" :class="{ 'active-button': activeButton === 'videoSquare' }"
+            @click="setActiveButton('videoSquare')">视频广场</el-button>
+            <el-button type="text" :class="{ 'active-button': activeButton === 'situationAnalysis' }"
+            @click="setActiveButton('situationAnalysis')">态势分析</el-button>
         </div>
 
         <!-- 退出登录 -->
@@ -222,13 +226,13 @@
 
     <!-- 监控点位的查看详情 --> 
     <div>
-        <el-dialog v-model="dialogVisible" title="点位详情" width="900" >
+        <el-dialog v-model="dialogVisible" title="点位详情" width="960" >
             <template #header>
             <div class="custom-header">
-                <img src="../assets/ship.png"  class="header-image">
+                <img src="../assets/ship.png" alt="头部图片" class="header-image">
                 <span class="header-title">点位详情</span>
                 <div>
-                    <el-tabs v-model="activeName" :stretch="false" style="color: white; margin-top: 10px;margin-left: 540px;caret-color: transparent;" @tab-click="handleClick">
+                    <el-tabs v-model="activeName" :stretch="false" style="color: white; margin-top: 10px;margin-left: 600px;caret-color: transparent;" @tab-click="handleClick">
                         <el-tab-pane label="实时监控" name="first" ></el-tab-pane>
                         <el-tab-pane label="预警事件" name="second"></el-tab-pane>
                     </el-tabs>
@@ -238,6 +242,50 @@
             <div>
                <img src="../assets/监控3.png" class="body-image"> 
                <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;">{{ currentName }}</span>
+               <div class="video-play"></div>
+               <div class="cloud-c">云台控制</div>
+               <div style="margin-left: 550px;margin-top: 10px;">目前状态：</div>
+               <div style="margin-left: 625px;margin-top: -22px; color:deepskyblue;">自动</div>
+               <div class="dianji">
+               </div>
+               <div>
+                <!-- 方向按钮 -->
+                <button class="image-button">
+                    <img src="../assets/left5.png" alt="左键" class="left5">
+                </button>    
+                <button class="image-button">
+                    <img src="../assets/up5.png" alt="上键" class="up5">
+                </button>
+                <button class="image-button">
+                    <img src="../assets/down6.png" alt="下" class="down6">
+                </button>
+                <button class="image-button">
+                    <img src="../assets/right3.png" alt="右键" class="right3">
+                </button>
+                    <img src="../assets/center2.png" alt="中心键" class="center">
+               </div>
+               <!-- 小按钮 -->
+               <div class="button bianbei-add">
+                <img src="../assets/icon_bianbei01.png" style="margin-left: -20px;margin-right: 5px;margin-top: 3px;">
+                <span style="top: -3px;position: relative;">变倍 +</span>
+               </div>
+               <div class="button bianbei-de"> 
+                <img src="../assets/icon_bianbei01(1).png" style="margin-left: 18px;margin-top: 8px;margin-right: 5px;">
+                <span style="position: relative;top: -2px;">变倍 -</span>
+                </div>
+               <div class="button bianjiao-add">
+                <img src="../assets/icon_bianjiao01.png" style="margin-left: 15px;margin-top: 10px;">
+                <span style="position: relative;left: 5px;top: -3px;">变焦 +</span>
+                </div>
+               <div class="button bianjiao-de">
+                <img src="../assets/icon_bianjiao02.png" style="margin-left: 18px;margin-top: 10px;">
+                <span style="position: relative;top: -3px;left: 5px;">变焦 -</span>
+               </div>
+                <!-- 大按钮 -->
+                <div class="button close">
+                    <img src="../assets/ssjk.png" style="width: 35px;margin-left: 35px;margin-top: 15px;">
+                    <span style="position: relative;left: 7px;top: -10px;">关闭激光</span>
+                </div>
             </div>
         </el-dialog>
     </div>      
@@ -258,6 +306,13 @@ const dialogVisible = ref(false);
 const currentName = ref(''); //点位详情的地名
 const activeName = ref('first'); //弹窗默认点击实时监控
 
+
+const activeButton = ref('humanMachine'); // 默认选中的按钮
+
+// 激活按钮
+const setActiveButton = (button) => {
+  activeButton.value = button;
+};
 
 const value = ref(null);
 const value1 = ref(new Date());
@@ -604,6 +659,7 @@ function toggleEventMarkers() {
   }
 }
 
+// 热力图显示和隐藏
 function toggleHeatmap() {
   if (checked4.value) {
     heatmap.setDataSet({
@@ -621,6 +677,143 @@ function toggleHeatmap() {
 
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
+
+.close {
+    width: 170px;
+    height: 70px;
+    background-image: url('../assets/bg05.png');
+    background-size: contain;
+    margin-left: 730px;
+    margin-top: -70px;
+}
+
+.button {
+
+  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+.button:hover {
+  transform: scale(1.05);
+//   background-color: #f0f0f0; /* 悬停时背景色 */
+}
+
+.bianjiao-de {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg04.png');
+    background-size: contain;
+    margin-left: 630px;
+    font-size: 12px;
+    margin-top: -35px;
+}
+
+.bianjiao-add {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg03.png');
+    background-size: contain;
+    margin-left: 545px;
+    font-size: 12px;
+}
+
+.bianbei-de {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg02.png');
+    background-size: contain;
+    margin-left: 630px;
+    margin-top: -35px;
+    font-size: 12px;
+}
+.bianbei-add {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg01.png');
+    background-size: contain;
+    margin-top: 25px;
+    margin-left: 545px;
+    padding: 6px 0 0 35px;
+    font-size: 12px;
+}
+
+/* 设置图片按钮样式 */
+.image-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.image-button img {
+  transition: transform 0.3s ease, filter 0.3s ease; /*动画过渡时间 */
+}
+
+.image-button:hover img {
+  transform: scale(1.1); /* 放大效果 */
+  filter: brightness(1.2); /* 增亮效果 */
+}
+
+.image-button:active img {
+  transform: scale(0.9); /* 缩小效果 */
+  filter: brightness(0.8); /* 变暗效果 */
+}
+.center {
+    width: 80px;
+    margin-top: -112px;
+    margin-left: -110px;
+    position: absolute;
+}
+.right3 {
+    width: 60px;
+    margin-top: -163px;
+    margin-left: -28px;
+    position: absolute;
+}
+.down6 {
+    height: 56px;
+    width: 140px;
+    margin-left: 683px;
+    margin-top: -33px;
+}
+.up5 {
+    height: 60px;
+    width: 142px;
+    margin-bottom: 105px;
+    margin-left: -29px;
+}
+.left5 {
+    width: 60px;
+    margin-left: 650px;
+    margin-top: 56px;
+}
+
+.dianji {
+    width: 32px;
+    height: 25px;
+    background-image: url('../assets/icon_dianji_pre.png');
+    background-size: contain;
+    margin-left: 880px;
+    margin-top: -20px;
+}
+
+.cloud-c {
+    width: 400px;
+    height: 23px;
+    background-color: #23a1ba91;
+    margin-left: 540px;
+    margin-top: -398px;
+    color: #ffffff;
+    padding: 0 0 0 20px;
+    border-left: 2px solid white;
+    font-weight: bold;
+}
+.video-play {
+    width: 500px;
+    height: 400px;
+    background-color: #00ffff;
+    margin-left: 15px;
+    margin-top: 10px;
+    display: flex;
+}
 
 .body-image {
     margin-top: 5px;
@@ -653,8 +846,8 @@ function toggleHeatmap() {
   color: white;
 }
 :deep(.el-dialog__body) {
-  height: 500px;  
-  background-color: #15325d; /* 头部颜色 */
+  height: 530px;  
+  background-color: #15325d; /* body颜色 */
   color: white;
 }
 
@@ -849,25 +1042,18 @@ function toggleHeatmap() {
         margin-left: 5px;
         padding: 20px;
         transition: color 0.3s ease;
-        -webkit-background-clip: text;
+        // -webkit-background-clip: text;
         /* 使背景剪裁为文本 */
 
     }
 
 }
-
-// 按钮颜色变化
-.el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):hover {
-    background-image: linear-gradient(to bottom, #ffffff, #fc9e2b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.el-button.active-button {
+  background-image: linear-gradient(to bottom, #ffffff, #fc9e2b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.el-button:not(.event-type,.custom-button,.eq,.status,.custom-date-picker):active {
-    background-image: linear-gradient(to bottom, #ffffff, #fc9e2b);
-    -webkit-background-clip: text;
-    // -webkit-text-fill-color: transparent; 
-}
 
 .left {
     width: 315px;
@@ -1329,10 +1515,6 @@ function toggleHeatmap() {
 </style>
 
 <style lang="css">
-.custom-dialog::v-deep .el-dialog__header {
-  background-color: #f56c6c; /* 头部颜色 */
-  color: white;
-}
 
 /* 使用更高优先级的选择器 */
 ::v-deep .el-input__inner {
