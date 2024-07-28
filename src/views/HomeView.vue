@@ -242,11 +242,16 @@
             <div>
                <img src="../assets/监控3.png" class="body-image"> 
                <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;">{{ currentName }}</span>
-               <div class="video-play"></div>
+               <div class="video-play">
+                <video ref="videoPlayer" class="video-player" controls>
+                <source :src="videoSrc" type="video/mp4">
+                
+                </video>
+               </div>
                <div class="cloud-c">云台控制</div>
                <div style="margin-left: 550px;margin-top: 10px;">目前状态：</div>
                <div style="margin-left: 625px;margin-top: -22px; color:deepskyblue;">自动</div>
-               <div class="dianji">
+               <div class="button dianji">
                </div>
                <div>
                 <!-- 方向按钮 -->
@@ -293,14 +298,18 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, reactive} from 'vue';
 import { ElTree, ElDropdown, ElDropdownItem, ElButton, ElInput, ElIcon } from 'element-plus';
 import { ElDialog } from 'element-plus';
-import { ArrowDown } from '@element-plus/icons-vue';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import yellowMarker from '@/assets/dingwei.png'
 import infobg from '@/assets/bg_dianwei@2x.png'
 import fork from '@/assets/fork.png'
+// 视频文件路径
+const videoSrc = ref('/public/video/捕鱼.mp4');
+
+// 引用视频元素
+const videoPlayer = ref(null);
 
 const dialogVisible = ref(false);
 const currentName = ref(''); //点位详情的地名
@@ -469,6 +478,10 @@ const heatmapData = [
 
 // 地图调用
 onMounted(() => {
+    // 挂载视频播放
+    if (videoPlayer.value) {
+        videoPlayer.value.load();
+    }
     window._AMapSecurityConfig = {
         securityJsCode: '4b3d691434564bd8215f3b8f0ee44e3e',
     };
@@ -678,6 +691,15 @@ function toggleHeatmap() {
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
 
+
+.video-player {
+    width: 500px;
+    height: 400px;
+    margin-left: 15px;
+    position: relative;
+    top: -10px;
+}
+
 .close {
     width: 170px;
     height: 70px;
@@ -806,14 +828,13 @@ function toggleHeatmap() {
     border-left: 2px solid white;
     font-weight: bold;
 }
-.video-play {
-    width: 500px;
-    height: 400px;
-    background-color: #00ffff;
-    margin-left: 15px;
-    margin-top: 10px;
-    display: flex;
-}
+// .video-play {
+//     width: 500px;
+//     height: 400px;
+//     margin-left: 15px;
+//     margin-top: 10px;
+//     display: flex;
+// }
 
 .body-image {
     margin-top: 5px;
