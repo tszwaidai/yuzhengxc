@@ -226,7 +226,7 @@
 
     <!-- 监控点位的查看详情 --> 
     <div>
-        <el-dialog v-model="dialogVisible" title="点位详情" width="960" >
+        <el-dialog v-model="dialogVisible" title="点位详情" width="1000" >
             <template #header>
             <div class="custom-header">
                 <img src="../assets/ship.png" alt="头部图片" class="header-image">
@@ -234,26 +234,28 @@
                 <div>
                     <el-tabs v-model="activeName" :stretch="false" style="color: white; margin-top: 10px;margin-left: 600px;caret-color: transparent;" @tab-click="handleClick">
                         <el-tab-pane label="实时监控" name="first" ></el-tab-pane>
-                        <el-tab-pane label="预警事件" name="second"></el-tab-pane>
+                        <el-tab-pane label="预警事件" name="second" ></el-tab-pane>
                     </el-tabs>
                 </div>
             </div>
             </template>
-            <div>
-               <img src="../assets/监控3.png" class="body-image"> 
-               <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;">{{ currentName }}</span>
-               <div class="video-play">
-                <video ref="videoPlayer" class="video-player" controls>
-                <source :src="videoSrc" type="video/mp4">
-                
-                </video>
-               </div>
-               <div class="cloud-c">云台控制</div>
-               <div style="margin-left: 550px;margin-top: 10px;">目前状态：</div>
-               <div style="margin-left: 625px;margin-top: -22px; color:deepskyblue;">自动</div>
-               <div class="button dianji">
-               </div>
-               <div>
+
+            <!-- 实时监控 -->
+            <template v-if="!showW">
+                <div>
+                <img src="../assets/监控3.png" class="body-image"> 
+                <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;">{{ currentName }}</span>
+                <div class="video-play">
+                    <video ref="videoPlayer" class="video-player" controls>
+                    <source :src="videoSrc" type="video/mp4">
+                    </video>
+                </div>
+                <div class="cloud-c">云台控制</div>
+                <div style="margin-left: 550px;margin-top: 10px;">目前状态：</div>
+                <div style="margin-left: 625px;margin-top: -22px; color:deepskyblue;">自动</div>
+                <div class="button dianji">
+                </div>
+                <div>
                 <!-- 方向按钮 -->
                 <button class="image-button">
                     <img src="../assets/left5.png" alt="左键" class="left5">
@@ -292,6 +294,52 @@
                     <span style="position: relative;left: 7px;top: -10px;">关闭激光</span>
                 </div>
             </div>
+        </template>
+
+        <!-- 预警事件 -->
+        <template v-if="showW">
+            <div>
+                <img src="../assets/icon_warning.png" style="width: 50px; margin-left: 20px; margin-top: 20px;">
+                <span style="color:deepskyblue;position: relative;top: -30px; left: 10px;font-size: 12px;">累计预警</span>
+                <span style="color: gold;position: relative;top: -5px;left: -37px;font-size: 18px;font-weight: bold;">19</span>
+            </div>
+
+            <div>
+                <img src="../assets/icon_warning.png" style="width: 50px;position: relative; margin-left: 180px; top: -64px;">
+                <span style="color:deepskyblue;position: relative;top: -95px; left: 10px;font-size: 12px;">已处理预警</span>
+                <span style="color: aqua;position: relative;top: -70px;left: -37px;font-size: 18px;font-weight: bold;">1</span>
+            </div>
+
+            <div>
+                <img src="../assets/icon_warning.png" style="width: 50px;position: relative; margin-left: 350px; top: -128px;">
+                <span style="color:deepskyblue;position: relative;top: -160px; left: 10px;font-size: 12px;">待处理预警</span>
+                <span style="color:red;position: relative;top: -135px;left: -37px;font-size: 18px;font-weight: bold;">18</span>
+            </div>
+
+            <div class="videoes">
+                <el-scrollbar height="400px" style="margin-top: -100px; width: 530px;">
+                    <div class="scrollbar-demo-container">
+                        <div v-for="(item, index) in 10" :key="index" class="scrollbar-demo-row">
+                        <div class="scrollbar-demo-item"
+                            :class="{ 'active': activeItem === index * 2 }"
+                            @click="setActiveItem(index * 2)">
+                            <span style="font-weight: bold;position: relative;top: 80px;left: -5px;">疑似船只</span>
+                            <span style="font-size: 12px;color: lightblue;position: relative;top: 80px;left: -5px;">（类型）</span>
+                            <span style="width: 40px;height: 20px;background-color:tomato;font-size: 10px;padding: 3px;font-weight: bold;margin-top: 160px;margin-left: 100px;">待处理</span>
+                        </div>
+                        <div class="scrollbar-demo-item"
+                        :class="{ 'active': activeItem === index * 2 + 1 }"
+                        @click="setActiveItem(index * 2 + 1)">
+                            <span style="font-weight: bold;position: relative;top: 80px;left: -5px;">疑似船只</span>
+                            <span style="font-size: 12px;color: lightblue;position: relative;top: 80px;left: -5px;">（类型）</span>
+                            <span style="width: 40px;height: 20px;background-color:tomato;font-size: 10px;padding: 3px;font-weight: bold;margin-top: 160px;margin-left: 100px;">待处理</span>
+                        </div>
+                        </div>
+                    </div>
+                    
+                </el-scrollbar>
+            </div>
+        </template>
         </el-dialog>
     </div>      
 
@@ -314,6 +362,28 @@ const videoPlayer = ref(null);
 const dialogVisible = ref(false);
 const currentName = ref(''); //点位详情的地名
 const activeName = ref('first'); //弹窗默认点击实时监控
+
+// 跟踪当前被点击的框
+const activeItem = ref(null);
+
+// 设置当前被点击的框
+const setActiveItem = (item) => {
+  activeItem.value = item;
+};
+
+// 控制显示内容的布尔值
+const showW = ref(false);
+
+// 切换显示内容的函数
+const handleClick = (tab) => {
+  if (tab.props.name === 'second') { //一定要加props
+    showW.value = true;
+    console.log("切换到预警事件");
+  } else {
+    showW.value = false;
+    console.log("切换到实时监控");
+  }
+};
 
 
 const activeButton = ref('humanMachine'); // 默认选中的按钮
@@ -691,6 +761,37 @@ function toggleHeatmap() {
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
 
+
+.scrollbar-demo-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.scrollbar-demo-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-left: 15px;
+
+}
+.scrollbar-demo-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 130px;
+  width: 49.5%; /* 设置为父容器宽度的48%，以便有间隙 */
+  margin-bottom: 30px;
+  border: 1px solid black;
+  background: url('../assets/捕鱼截图1.png');
+  background-size:cover;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.scrollbar-demo-item.active {
+  border-color: yellow;
+}
 
 .video-player {
     width: 500px;
