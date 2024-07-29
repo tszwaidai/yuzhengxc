@@ -201,22 +201,21 @@
             <div class="right-title3">
                 <span class="span1">事件趋势日历</span>
             </div>
-
             <div class="calendar">
                 <el-calendar v-model="value1" />
             </div>
             <div class="legend">
                 <div class="legend-item">
                     <div class="color-box blue" style="margin-left: -100px;"></div>
-                    <span style="color: white; font-size: 12px; margin-left: -15px; margin-top: -90px;">正常(&lt;10)</span>
+                    <span style="color: white; font-size: 10px; margin-left: -15px; margin-top: -90px;">正常(&lt;10)</span>
                 </div>
                 <div style="display: flex; align-items: center;">
                 <div  style="background-color: yellow;margin-left: 120px; width: 35px; height: 7px; border-radius: 2px; margin-top: -92px;"></div>
-                    <div style="margin-left: 25px;color: white;font-size: 12px;margin-top: -70px;">警告(11-20)</div>
+                    <div style="margin-left: 25px;color: white;font-size: 10px;margin-top: -70px;">警告(11-20)</div>
                 </div>
                 <div class="legend-item">
                     <div class="color-box red" style="margin-left: 300px;"></div>
-                    <span style="color: white; font-size: 12px; margin-left: 370px; margin-top: -90px;">严重(&gt;20)</span> 
+                    <span style="color: white; font-size: 10px; margin-left: 370px; margin-top: -90px;">严重(&gt;20)</span> 
                 </div>
             </div>
 
@@ -316,6 +315,7 @@
                 <span style="color:red;position: relative;top: -135px;left: -37px;font-size: 18px;font-weight: bold;">18</span>
             </div>
 
+            <!-- 左侧滚动条 -->
             <div class="videoes">
                 <el-scrollbar height="400px" style="margin-top: -100px; width: 530px;">
                     <div class="scrollbar-demo-container">
@@ -328,17 +328,57 @@
                             <span style="width: 40px;height: 20px;background-color:tomato;font-size: 10px;padding: 3px;font-weight: bold;margin-top: 160px;margin-left: 100px;">待处理</span>
                         </div>
                         <div class="scrollbar-demo-item"
-                        :class="{ 'active': activeItem === index * 2 + 1 }"
-                        @click="setActiveItem(index * 2 + 1)">
+                            :class="{ 'active': activeItem === index * 2 + 1 }"
+                            @click="setActiveItem(index * 2 + 1)">
                             <span style="font-weight: bold;position: relative;top: 80px;left: -5px;">疑似船只</span>
                             <span style="font-size: 12px;color: lightblue;position: relative;top: 80px;left: -5px;">（类型）</span>
                             <span style="width: 40px;height: 20px;background-color:tomato;font-size: 10px;padding: 3px;font-weight: bold;margin-top: 160px;margin-left: 100px;">待处理</span>
                         </div>
                         </div>
-                    </div>
-                    
+                    </div>   
                 </el-scrollbar>
             </div>
+            <!-- 右侧 -->
+            <div class="chuli-desc">
+                <div>
+                    <img src="../assets/监控3.png" class="body-image"> 
+                    <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;">{{ currentName }}</span>
+                </div>
+                <div class="chuli-top">
+                <div class="chuli-icon"></div>
+                <span class="chuli-span">处理详情</span>
+                </div>
+                <div>
+                    <el-scrollbar style="height: 300px; width: 330px; margin-left: 40px;" class="custom-scrollbar">
+                        <div class="details-content">
+                        <p>预警类型：<span class="details">疑似船只</span></p>
+                        <p>预警方位：<span class="details">A3</span></p>
+                        <p>预警时间：<span class="details">2023-01-01 17:14:19.0</span></p>
+                        <p>预警状态：<span style="width: 10px;height: 40px;background-color:tomato;color: white;padding: 5px;border-radius: 4px;">待处理</span></p>
+                        <p>推送时间：<span class="details">2023-01-01 19:14:00.0</span></p>
+                        <p>负责人：<span class="details">xxx</span></p>
+                        <p>联系方式：<span class="details">12345678901</span></p>
+                        <p>推送内容：<span class="details">暂无推送内容</span></p>
+                        <p>反馈信息：<span class="details">暂无反馈信息</span></p>
+                        <div style="color: aqua;">事件多图：
+                            <img src="../assets/捕鱼截图.png" alt="Example" class="event-image">
+                            <img src="../assets/捕鱼截图.png" alt="Example" class="event-image">
+                            <span style="color: dimgray;margin-left: 10px;" @click="viewMoreImages">查看更多</span>
+                        </div>
+                        <div style="color: aqua;">事件视频：
+                            <video ref="videoPlayer" class="chuli-video" controls>
+                            <source :src="videoSrc" type="video/mp4">
+                            </video>
+                        </div>
+                            <div class="image-button">
+                            <img src="../assets/bg05.png" alt="Button" class="ssjk1">
+                            <span style="margin-left: -140px;position: relative;top: -15px;font-weight: bold;">点击查看事件地图</span>
+                            </div>
+                        </div>
+                    </el-scrollbar>
+                </div>
+            </div>
+
         </template>
         </el-dialog>
     </div>      
@@ -383,6 +423,12 @@ const handleClick = (tab) => {
     showW.value = false;
     console.log("切换到实时监控");
   }
+};
+
+
+// 查看更多图片按钮的处理函数
+const viewMoreImages = () => {
+  console.log("查看更多图片");
 };
 
 
@@ -472,6 +518,7 @@ const toggleView = () => {
     showWarning.value = !showWarning.value;
 };
 
+// 退出登录
 const handleCommand = (command) => {
     if (command === 'logout') {
         logout();
@@ -761,7 +808,84 @@ function toggleHeatmap() {
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
 
+.ssjk1 {
+    margin-left: 70px;
+    margin-top: 55px;
+    width: 180px;
+    height: 40px;
+}
+.details {
+    color: #ffffff;
+}
+.chuli-video {
+    position: relative;
+    top: 50px;
+    width: 180px;
+    height: 100px;
+}
+.details-content p {
+  margin: 10px 0;
+  color: aqua;
+}
 
+.event-image {
+  width: 70px;
+  height: auto;
+  position: relative;
+  top: 20px;
+  margin: 1px;  
+}
+
+
+/* 自定义 el-scrollbar 的样式 */
+.custom-scrollbar ::v-deep .el-scrollbar__wrap {
+  scrollbar-color: aqua transparent; /* 滚动条颜色 */
+  scrollbar-width: thin; /* 滚动条宽度 */
+}
+
+.custom-scrollbar ::v-deep .el-scrollbar__thumb {
+  background-color: aqua; /* 滚动条颜色 */
+  border-radius: 10px; /* 圆角 */
+}
+
+.custom-scrollbar ::v-deep .el-scrollbar__track {
+  background-color: transparent; /* 滚动条轨道颜色 */
+}
+
+.chuli-span {
+    position: relative;
+    left: 50px;
+    top: -20px;
+    font-family: 'font2_style';
+    font-size: 1.5em;
+    color: white;
+}
+
+.chuli-icon {
+    width: 18px;
+    height: 18px;
+    top: 5px;
+    margin-left: 7px;
+    background-image: url('../assets/6.png');
+    position: relative;
+} 
+
+.chuli-top {
+    width: 160px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 15px;
+    background-image: url('../assets/bg_title@2x.png');
+    background-size: cover;
+}
+
+.chuli-desc {
+    width: 400px;
+    height: 417px;
+    background-color:#002453;
+    margin-left: 580px;
+    margin-top: -400px;
+}
 .scrollbar-demo-container {
   display: flex;
   flex-direction: column;
@@ -1637,7 +1761,6 @@ function toggleHeatmap() {
 </style>
 
 <style lang="css">
-
 /* 使用更高优先级的选择器 */
 ::v-deep .el-input__inner {
   background: transparent;
