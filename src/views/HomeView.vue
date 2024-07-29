@@ -21,7 +21,9 @@
         <div class="user">
             <el-dropdown @command="handleCommand">
                 <el-button type="primary" class="custom-button">
-                    管理员<el-icon class="el-icon--right"><arrow-down /></el-icon>
+                    <img src="../assets/icon_my.png">
+                    管理员
+                    <img src="../assets/icon_accout_arrow@2x.png">
                 </el-button>
                 <template #dropdown>
                     <el-dropdown-menu>
@@ -383,6 +385,7 @@
         </el-dialog>
     </div>      
 
+
 </template>
 
 <script setup>
@@ -539,6 +542,7 @@ const checked4 = ref(true);
 let heatmap;
 let map;
 let infoWindow;
+let eventWindow;
 const markers = ref([]);
 const circles = ref([]);
 const eventMarkers = ref([]);
@@ -567,7 +571,7 @@ const markersData = [
 
 // 标注事件地点
 const eventData = [
-    { lng: 121.455151, lat: 29.758089 },
+    { lng: 121.455151, lat: 29.758089, name: '奉化方桥朱应村',date: '2024-04-13',time: '15:04:22',status: '已处理', eveType: '疑似捕鱼'},
     { lng: 121.776341, lat: 29.691244 },
     { lng: 121.61679, lat: 29.599672 },
     { lng: 121.708552, lat: 29.56876 },
@@ -621,13 +625,21 @@ onMounted(() => {
             // 将地图视图限制在宁波市
             map.setCity('宁波');
 
-            // 创建自定义信息框
+            // 创建监控地点自定义信息框
             infoWindow = new AMap.InfoWindow({
                 isCustom: true, // 使用自定义窗体
                 autoMove: true,
                 offset: new AMap.Pixel(0, -70),
                 content: '' // 初始化为空
             });
+
+            // 创建事件地点信息框
+            eventWindow = new AMap.InfoWindow({
+                isCustom: true, // 使用自定义窗体
+                autoMove: true,
+                offset: new AMap.Pixel(15, -35),
+                content: '' // 初始化为空
+            })
 
             // 添加多个标记
             markersData.forEach((markerPosition) => {
@@ -692,7 +704,15 @@ onMounted(() => {
                         imageSize: new AMap.Size(30, 30)
                     }),
                 });
-                // map.add(marker);
+
+                // 添加点击事件
+                eventMarker.on('click', () => {
+                    currentName.value = markerPosition.name || '未知';
+                    eventWindow.setContent(createEventWindow(markerPosition));
+                    eventWindow.open(map, eventMarker.getPosition());
+                });
+
+                map.add(eventMarker);
                 eventMarkers.value.push(eventMarker);
             });
 
@@ -745,6 +765,26 @@ function createCustomInfoWindow(markerData) {
   `;
 }
 
+function createEventWindow(eventData) {
+    const infoImage = infobg;
+    const forkImage = fork;
+
+  return `
+    <div style="width: 281px;height: 200px;background: url('${infoImage}');background-size: contain;">
+      <div style="margin-top: 40px; margin-left: 25px; color: aqua;padding: 40px 0 0 5px">
+        <div>发生日期：<span style="color:white">${eventData.date || '未知'}</span></div>  
+        <div>发生时间：<span style="color:white">${eventData.time || '未知'}</span></div>
+        <div>处理状态：<span style="color:white">${eventData.status || '未知'}</span></div>
+        <div>事件类型：<span style="color:white">${eventData.eveType || '未知'}</span></div>
+        <div>事件详情：
+          <span style="color:red" onclick="show()">查看详情</span>
+        </div>
+      </div>
+      <div style="margin-left: 240px; margin-top: -130px; width:15px; height:15px; background: url('${forkImage}');background-size: contain;" onclick="closeInfoWindow()" ></div>
+    </div>
+  `;
+}
+
 
 window.show = function () {
     dialogVisible.value = true;
@@ -752,6 +792,9 @@ window.show = function () {
 window.closeInfoWindow = function () {
   if (infoWindow) {
     infoWindow.close();
+  }
+  if (eventWindow) {
+    eventWindow.close();
   }
 };
 
@@ -1251,23 +1294,16 @@ function toggleHeatmap() {
     margin-top: -170px;
 
     .custom-button {
-        // opacity: 0.8; 
         border: 2px solid rgb(0, 32, 67, 0.544);
         /* 边框颜色和透明度 */
         border-radius: 15px;
         /* 圆角边框 */
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
-        /* 发光效果 */
         background-color: transparent;
         color: white;
         /* 字体颜色 */
-        font-family: Arial, Helvetica, sans-serif;
         font-size: 1em;
         font-weight: bold;
         padding: 5px 15px;
-        // &:hover {
-        //     opacity: 1; 
-        // }
     }
 }
 
