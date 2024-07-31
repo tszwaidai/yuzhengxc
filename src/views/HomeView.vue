@@ -1,8 +1,9 @@
 <template>
+    <!-- 地图 -->
     <div id="container" style="width: 1600px; height: 100vh;margin-left: -130px;">
     </div>
 
-    
+    <!-- 页面头部布局 -->
     <div class="top">
         <span>智慧渔政视频预警系统</span>
 
@@ -369,7 +370,7 @@
                         </div>
                         <div style="color: aqua;">事件视频：
                             <video ref="videoPlayer" class="chuli-video" controls>
-                            <source :src="videoSrc" type="video/mp4">
+                            <source :src="videoSrc1" type="video/mp4">
                             </video>
                         </div>
                             <div class="image-button">
@@ -380,29 +381,120 @@
                     </el-scrollbar>
                 </div>
             </div>
-
         </template>
         </el-dialog>
     </div>      
 
+    <!-- 事件点位的查看详情 -->
+    <div>
+        <el-dialog v-model="eventDialogVisible" title="点位详情" width="1000" >
+            <template #header>
+            <div class="custom-header">
+                <img src="../assets/ship.png" alt="头部图片" class="header-image">
+                <span class="header-title">事件详情</span>
+                <div>
+                    <el-tabs v-model="activeName" :stretch="false" style="color: white; margin-top: 10px;margin-left: 600px;caret-color: transparent;" @tab-click="handleClick">
+                        <el-tab-pane label="事件详情" name="first" ></el-tab-pane>
+                        <el-tab-pane label="事件地图" name="second" ></el-tab-pane>
+                    </el-tabs>
+                </div>
+            </div>
+            </template>
+
+            <!-- 事件详情 -->
+            <template v-if="!showW">
+                <!-- 视频 -->
+                <div>
+                    <video ref="videoPlayer" class="video-player1" controls>
+                    <source :src="videoSrc1" type="video/mp4">
+                    </video> 
+                </div>
+
+                <!-- 多图平铺走马灯 -->
+                <div v-for="(item, index) in dataList" :key="index">
+                    <el-carousel :autoplay="false" height="250px" class="carousel-container">
+                        <el-carousel-item v-for="(imgData, i) in item.newDataList" :key="i" class="carousel-item">
+                            <div class="images-container">
+                                <img v-for="(img, index) in imgData" :key="index" :src="img.url" alt="" class="top-img" />
+                            </div>
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+                <!-- 事件详情右侧 -->
+                <div class="event-desc">
+                    <div>
+                    <img src="../assets/监控3.png" class="body-image"> 
+                    <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;">{{ currentName }}</span>
+                    </div>
+                    <div class="chuli-top">
+                    <div class="chuli-icon"></div>
+                    <span class="chuli-span">处理详情</span>
+                    </div>
+                    <div>
+                    <el-scrollbar style="height: 300px; width: 330px; margin-left: 40px;" class="custom-scrollbar">
+                        <div class="details-content">
+                        <br>
+                        <p>预警类型：<span class="details">疑似捕鱼</span></p>
+                        <p>预警方位：<span class="details">H5</span></p>
+                        <p>发生距离：<span class="details">210米</span></p>
+                        <p>预警时间：<span class="details">2023-01-01 17:14:19.0</span></p>
+                        <p>预警状态：<span style="width: 10px;height: 40px;background-color:tomato;color: white;padding: 5px;border-radius: 4px;">待处理</span></p>
+                        <br>
+                        <p>推送时间：<span class="details">2023-01-01 19:14:00.0</span></p>
+                        <p>负责人：<span class="details">xxx</span></p>
+                        <p>联系方式：<span class="details">12345678901</span></p>
+                        <p>推送内容：<span class="details">暂无推送内容</span></p>
+                        <p>反馈信息：<span class="details">暂无反馈信息</span></p>
+    
+                        </div>
+                    </el-scrollbar>
+                </div>
+                </div>
+            </template>
+
+            <!-- 事件地图 -->
+            <template  v-if="showW">
+                <!-- 要使用id 不能使用ref -->
+                <div id="mapContainer" style="width: 950px;height: 480px;margin-left: 20px;top: 30px;"></div> 
+            </template>
+        </el-dialog>    
+    </div>
 
 </template>
 
 <script setup>
-import { ref, watch, onMounted, reactive} from 'vue';
+import { ref, watch, onMounted, nextTick} from 'vue';
 import { ElTree, ElDropdown, ElDropdownItem, ElButton, ElInput, ElIcon } from 'element-plus';
 import { ElDialog } from 'element-plus';
 import AMapLoader from '@amap/amap-jsapi-loader';
 import yellowMarker from '@/assets/dingwei.png'
 import infobg from '@/assets/bg_dianwei@2x.png'
 import fork from '@/assets/fork.png'
+import fishImg from '@/assets/捕鱼截图.png'
+import fishImg1 from '@/assets/捕鱼截图1.png'
+import jiankongIcon from '@/assets/icon_location@3x.png'
+
 // 视频文件路径
 const videoSrc = ref('/public/video/捕鱼.mp4');
+const videoSrc1 = ref('/public/video/钓鱼.mp4');
+
+// 事件详情走马灯图
+const dataList = ref([
+    {
+        name: '第一批图片',
+        newDataList: [
+            [{url: fishImg},{url: fishImg},{url: fishImg}],
+            [{url: fishImg1},{url: fishImg1},{url: fishImg1}],
+        ]
+
+    },
+])
 
 // 引用视频元素
 const videoPlayer = ref(null);
 
-const dialogVisible = ref(false);
+const dialogVisible = ref(false); //监控查看详情弹窗
+const eventDialogVisible = ref(false); //事件查看详情弹窗
 const currentName = ref(''); //点位详情的地名
 const activeName = ref('first'); //弹窗默认点击实时监控
 
@@ -416,17 +508,73 @@ const setActiveItem = (item) => {
 
 // 控制显示内容的布尔值
 const showW = ref(false);
+const center1 = ref([121.549792, 29.868388]); 
 
 // 切换显示内容的函数
 const handleClick = (tab) => {
   if (tab.props.name === 'second') { //一定要加props
     showW.value = true;
+    // 时间初始化
+    nextTick(() => {
+        initMap();
+    });
     console.log("切换到预警事件");
   } else {
     showW.value = false;
     console.log("切换到实时监控");
   }
 };
+
+const map1 = ref('');
+
+// 获取事件地图
+const initMap = () => {
+    nextTick (() => {
+    AMapLoader.load({
+      key: '103ddfe5f247093fdcd4884aa83ed3db',
+      version: '2.0',
+      
+    }).then((AMap) => {
+      if (map1.value) {
+        map1.value.destroy();
+      }
+      map1.value = new AMap.Map('mapContainer' ,{ //因为定义的是const map1 必须用map1.value
+        center: center1.value,
+        zoom: 14,
+        layers: [
+          new AMap.TileLayer.Satellite(),
+          new AMap.TileLayer.RoadNet(),
+        ]
+      });
+
+      console.log(center1.value);
+
+        const marker = new AMap.Marker({
+          position: center1.value,
+          icon: new AMap.Icon({
+            image: jiankongIcon, // 使用导入的本地图片
+            size: new AMap.Size(40, 40),
+            imageSize: new AMap.Size(40, 40)
+          }),
+        });
+        map1.value.add(marker);
+      
+
+        // 添加多个事件标记
+        const eventMarker = new AMap.Marker({
+          position: center1.value,
+          icon: new AMap.Icon({
+            image: yellowMarker, // 使用导入的本地图片
+            size: new AMap.Size(30, 30),
+            imageSize: new AMap.Size(30, 30)
+          }),
+        });
+        map1.value.add(eventMarker);
+        
+        });
+    });
+};
+
 
 
 // 查看更多图片按钮的处理函数
@@ -599,15 +747,22 @@ const heatmapData = [
 
 // 地图调用
 onMounted(() => {
+    nextTick(() => {
+        if (showW.value) {
+            initMap();
+        }
+    });
+
     // 挂载视频播放
     if (videoPlayer.value) {
         videoPlayer.value.load();
     }
+
     window._AMapSecurityConfig = {
-        securityJsCode: '4b3d691434564bd8215f3b8f0ee44e3e',
+        securityJsCode: 'a03ee6d504a0c922204271fb5c7ef06d',
     };
     AMapLoader.load({
-        key: 'f69f1f816ed2bee14922a684b6e8bf82',
+        key: '103ddfe5f247093fdcd4884aa83ed3db',
         version: '2.0',
         plugins: ['AMap.HeatMap'], // 加载热力图插件
     })
@@ -624,12 +779,12 @@ onMounted(() => {
             });
             // 将地图视图限制在宁波市
             map.setCity('宁波');
-
+            
             // 创建监控地点自定义信息框
             infoWindow = new AMap.InfoWindow({
                 isCustom: true, // 使用自定义窗体
                 autoMove: true,
-                offset: new AMap.Pixel(0, -70),
+                offset: new AMap.Pixel(25, -30),
                 content: '' // 初始化为空
             });
 
@@ -645,6 +800,11 @@ onMounted(() => {
             markersData.forEach((markerPosition) => {
                 const marker = new AMap.Marker({
                     position: [markerPosition.lng, markerPosition.lat],
+                    icon: new AMap.Icon({
+                        image: jiankongIcon, // 使用导入的本地图片
+                        size: new AMap.Size(40, 40),
+                        imageSize: new AMap.Size(40, 40)
+                    }),
                 });
                 
                 // 添加点击事件
@@ -661,7 +821,7 @@ onMounted(() => {
             // 添加圆形覆盖物
             const circle = new AMap.Circle({
                     center: [121.440515, 29.93285], // 圆心位置
-                    radius: 20000, // 半径，单位：米
+                    radius: 20500, // 半径，单位：米
                     fillColor: '#6bab6e', // 圆形填充颜色 (绿色)
                     strokeColor: '#008000', // 圆形边框颜色 (绿色)
                     fillOpacity: 0.5, // 圆形填充透明度
@@ -705,9 +865,10 @@ onMounted(() => {
                     }),
                 });
 
-                // 添加点击事件
+                // 添加点击事件 
                 eventMarker.on('click', () => {
                     currentName.value = markerPosition.name || '未知';
+                    center1.value = [markerPosition.lng,markerPosition.lat], //获取事件地图地址
                     eventWindow.setContent(createEventWindow(markerPosition));
                     eventWindow.open(map, eventMarker.getPosition());
                 });
@@ -744,7 +905,7 @@ onMounted(() => {
         
 });
 
-// 信息窗体样式
+// 监控点位信息窗体样式
 function createCustomInfoWindow(markerData) {
   const infoImage = infobg;
   const forkImage = fork;
@@ -765,6 +926,7 @@ function createCustomInfoWindow(markerData) {
   `;
 }
 
+// 事件点位窗体样式
 function createEventWindow(eventData) {
     const infoImage = infobg;
     const forkImage = fork;
@@ -777,7 +939,7 @@ function createEventWindow(eventData) {
         <div>处理状态：<span style="color:white">${eventData.status || '未知'}</span></div>
         <div>事件类型：<span style="color:white">${eventData.eveType || '未知'}</span></div>
         <div>事件详情：
-          <span style="color:red" onclick="show()">查看详情</span>
+          <span style="color:red" onclick="showEvent()">查看详情</span>
         </div>
       </div>
       <div style="margin-left: 240px; margin-top: -130px; width:15px; height:15px; background: url('${forkImage}');background-size: contain;" onclick="closeInfoWindow()" ></div>
@@ -789,6 +951,11 @@ function createEventWindow(eventData) {
 window.show = function () {
     dialogVisible.value = true;
 }
+
+window.showEvent = function () {
+    eventDialogVisible.value = true;
+}
+
 window.closeInfoWindow = function () {
   if (infoWindow) {
     infoWindow.close();
@@ -850,6 +1017,51 @@ function toggleHeatmap() {
 
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
+
+.event-desc {
+    width: 400px;
+    height: 500px;
+    background-color:#00245320;
+    margin-left: 550px;
+    margin-top: -536px;
+}
+
+.carousel-container {
+  margin-bottom: 30px;
+  width: 500px;
+  margin-left: 15px;
+}
+
+.carousel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.images-container {
+  display: flex;
+  justify-content: space-around;
+  width: 500px;
+}
+
+.top-img {
+  width: 166.7px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.video-player1 {
+    width: 500px;
+    height: 280px;
+    margin-left: 15px;
+    position: relative;
+    top: 30px;
+} 
+
+/* 使用 v-deep 选择器来覆盖走马灯下面的横条 */
+::v-deep .el-carousel__indicator {
+  display: none;
+}
 
 .ssjk1 {
     margin-left: 70px;
