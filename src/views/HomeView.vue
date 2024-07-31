@@ -136,7 +136,22 @@
                     </template>
                     </el-dropdown>
                     
-                    <div class="video">   
+                    <!-- 左侧滚动条 -->
+                    <div class="videoes">
+                        <el-scrollbar height="470px" style="margin-top: -20px; width: 530px;">
+                            <div class="scrollbar-demo-container0">
+                                <div v-for="(item, index) in 10" :key="index" class="scrollbar-demo-row">
+                                <div class="scrollbar-demo-item"
+                                    :class="{ 'active': activeItem === index * 2 }"
+                                    @click="setActiveItem(index * 2)">
+                                    <span style="font-weight: bold;position: relative;top: 80px;left: -5px;">疑似船只</span>
+                                    <span style="font-size: 12px;color: lightblue;position: relative;top: 80px;left: -5px;">（类型）</span>
+                                    <span style="width: 40px;height: 20px;background-color:tomato;font-size: 10px;padding: 3px;font-weight: bold;margin-top: 160px;margin-left: 100px;">待处理</span>
+                                </div>
+                                
+                                </div>
+                            </div>   
+                        </el-scrollbar>
                     </div>
                     
 
@@ -1017,6 +1032,13 @@ function toggleHeatmap() {
 
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
+
+.scrollbar-demo-container0 {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 10px;
+} 
 
 .event-desc {
     width: 400px;
