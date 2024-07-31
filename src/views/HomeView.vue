@@ -508,7 +508,7 @@ const setActiveItem = (item) => {
 
 // 控制显示内容的布尔值
 const showW = ref(false);
-const center1 = ref([121.549792, 29.868388]); 
+const center1 = ref([121.549792, 29.868388]); //实例位置
 
 // 切换显示内容的函数
 const handleClick = (tab) => {
