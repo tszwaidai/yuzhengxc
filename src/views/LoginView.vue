@@ -27,6 +27,7 @@
 </template>
 
 <script>
+
 export default {
     name : 'login',
     data() {
@@ -36,11 +37,22 @@ export default {
         }
     },
     methods: {
-        handleLogin() {
-            if (this.username === 'admin' && this.password === 'admin') {
-                this.$router.push( { name : 'home' });
-            } else{
-                alert('用户名或密码错误');
+        async handleLogin() {
+            try {
+                const response = await this.$axios.post('/user/login', {
+                    username: this.username,
+                    password: this.password
+                });
+                console.log(response.data.code);
+                if (response.data.code == 200) {
+                    // 登录成功 跳转主页
+                    this.$router.push({ name: 'home' });
+                } else {
+                    alert("用户名或密码错误");
+                }
+            } catch (error) {
+                console.log(error);
+                
             }
         }
     }

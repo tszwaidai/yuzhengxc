@@ -77,11 +77,12 @@
                 <div class="select">
                     <el-input v-model="filterText" class="custom-input white-text" style="width: 290px;" placeholder="输入点位关键词" />
                     <el-tree ref="treeRef" 
-                            style="max-width: 600px;font-weight: bolder;margin-top: 10px;color: white;" 
-                            :data="data" 
-                            :props="defaultProps"
-                            default-expand-all 
-                            :filter-node-method="filterNode" />
+                            style="margin-top: 10px;"
+                            :data="treeData" 
+                            :props="defaultProps"   
+                            :filter-node-method="filterNode"
+                            :expand-on-click-node="false" />
+                            <!-- 默认节点不展开 -->
                 </div>
             </template>
 
@@ -154,8 +155,6 @@
                         </el-scrollbar>
                     </div>
                     
-
-
             </template>
     
             </div>
@@ -488,6 +487,7 @@ import fork from '@/assets/fork.png'
 import fishImg from '@/assets/捕鱼截图.png'
 import fishImg1 from '@/assets/捕鱼截图1.png'
 import jiankongIcon from '@/assets/icon_location@3x.png'
+import axios from 'axios';
 
 // 视频文件路径
 const videoSrc = ref('/public/video/捕鱼.mp4');
@@ -609,77 +609,44 @@ const value = ref(null);
 const value1 = ref(new Date());
 // 预警的日期
 const size = ref('medium'); // 或 'small', 'large', 根据需要调整
-const filterText = ref('');
-const treeRef = ref(null);
+const filterText = ref(''); //监控点位搜索内容
+const treeRef = ref(null); 
+const treeData = ref([]);
 const showWarning = ref(false);
 
+// 树形结构的默认属性
 const defaultProps = {
     children: 'children',
     label: 'label',
 };
 
+// 监控 filterText 的变化
 watch(filterText, (val) => {
     if (treeRef.value) {
         treeRef.value.filter(val);
     }
 });
 
+
+// 过滤节点的函数
 const filterNode = (value, data) => {
-    if (!value) return true;
-    return data.label.includes(value);
+  if (!value) return true;
+  return data.label.includes(value);
 };
 
-const data = [
-    {
-        id: 1,
-        label: 'Level one 1',
-        children: [
-            {
-                id: 4,
-                label: 'Level two 1-1',
-                children: [
-                    {
-                        id: 9,
-                        label: 'Level three 1-1-1',
-                    },
-                    {
-                        id: 10,
-                        label: 'Level three 1-1-2',
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        id: 2,
-        label: 'Level one 2',
-        children: [
-            {
-                id: 5,
-                label: 'Level two 2-1',
-            },
-            {
-                id: 6,
-                label: 'Level two 2-2',
-            },
-        ],
-    },
-    {
-        id: 3,
-        label: 'Level one 3',
-        children: [
-            {
-                id: 7,
-                label: 'Level two 3-1',
-            },
-            {
-                id: 8,
-                label: 'Level two 3-2',
-            },
-        ],
-    },
-];
+// 获取树形数据
+const fetchTreeData = async () => {
+    try {
+        const response = await axios.get('/address/tree');
+        treeData.value = response.data.data; //两层嵌套
+        console.log(response.data);
+        console.log(treeData.value);
+    } catch (error) {
+        console.error('无正确数据:', error);
+    }
+};
 
+// 是否展示
 const toggleView = () => {
     showWarning.value = !showWarning.value;
 };
@@ -691,8 +658,8 @@ const handleCommand = (command) => {
     }
 };
 
+// 退出登录的逻辑
 const logout = () => {
-    // 退出登录的逻辑，例如跳转到登录页
     window.location.href = '/';
 };
 
@@ -762,6 +729,10 @@ const heatmapData = [
 
 // 地图调用
 onMounted(() => {
+    //调用查询
+    fetchTreeData();
+
+
     nextTick(() => {
         if (showW.value) {
             initMap();
@@ -1953,6 +1924,7 @@ function toggleHeatmap() {
   background-color: transparent;
   color: aqua;
   border: aqua;
+  font-size: 12px;
 }
 
 ::v-deep .el-calendar__header .el-button:hover {
@@ -1962,12 +1934,12 @@ function toggleHeatmap() {
 ::v-deep .el-calendar {
 
     background-color: transparent;
-
     padding-right: 8px;
+
     .el-calendar__header {
         font-size: 13px;
         color: aqua;
-        line-height: 10px;
+        // line-height: 10px;
         border-bottom: 0;
     }
 
@@ -1978,6 +1950,7 @@ function toggleHeatmap() {
                 color: aqua;
                 font-weight: bold;
                 font-size: 12px;
+                top: -10px;
             }
         }
 
@@ -1986,19 +1959,19 @@ function toggleHeatmap() {
                 border: 0;
                 height: unset;
                 border-radius: 50%;
-                font-size: 12px;
+                font-size: 10px;
                 color: black;
             }
 
             .el-calendar-day {
-                height: 30px;
-                line-height: 35px;
+                height: 25px;
+                line-height: 10px;
                 padding: 0;
                 
                 span {
-                    height: 24px;
-                    line-height: 24px;
-                    width: 24px;
+                    height: 20px;
+                    line-height: 20px;
+                    width: 20px;
                     text-align: center;
                     border-radius: 50%;
                     background-color: rgb(0, 255, 255);
