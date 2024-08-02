@@ -3,7 +3,7 @@
     <div id="container" style="width: 1600px; height: 100vh;margin-left: -130px;">
     </div>
 
-     <!-- 页面头部布局 -->
+    <!-- 页面头部布局 -->
     <Header></Header>
 
     <!-- 多选框功能 -->
@@ -188,9 +188,16 @@
             <div class="right-title3">
                 <span class="span1">事件趋势日历</span>
             </div>
+            
             <div class="calendar">
-                <el-calendar v-model="value1" />
+                <img src="../assets/12.png" @click="prevYear" style="position: relative;top: 25px;left: 87px;width: 6px;">
+                <img src="../assets/13.png" @click="nextYear" style="position: relative;top: 25px;left: 180px;width: 6px;">
+                <img src="../assets/left.png" @click="prevMonth"  style="position: relative;top: 27px;left: 50px;width: 12px;">
+                <img src="../assets/right.png" @click="nextMonth" style="position: relative;top: 25px;left: 180px;width: 12px;">
+                <el-calendar v-model="calendar" class="calendar" ></el-calendar>
             </div>
+
+
             <div class="legend">
                 <div class="legend-item">
                     <div class="color-box blue" style="margin-left: -100px;"></div>
@@ -460,6 +467,33 @@ import jiankongIcon from '@/assets/icon_location@3x.png'
 import axios from 'axios';
 import router from '@/router';
 import Header from '@/components/Header.vue';
+
+// 日历
+const calendar = ref(new Date());
+
+const prevMonth = () => {
+  const newDate = new Date(calendar.value);
+  newDate.setMonth(newDate.getMonth() - 1);
+  calendar.value = newDate;
+};
+
+const nextMonth = () => {
+  const newDate = new Date(calendar.value);
+  newDate.setMonth(newDate.getMonth() + 1);
+  calendar.value = newDate;
+};
+
+const prevYear = () => {
+  const newDate = new Date(calendar.value);
+  newDate.setFullYear(newDate.getFullYear() - 1);
+  calendar.value = newDate;
+};
+
+const nextYear = () => {
+  const newDate = new Date(calendar.value);
+  newDate.setFullYear(newDate.getFullYear() + 1);
+  calendar.value = newDate;
+};
 
 // 视频文件路径
 const videoSrc = ref('/public/video/捕鱼.mp4');
@@ -977,6 +1011,7 @@ function toggleHeatmap() {
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
 
+
 .scrollbar-demo-container0 {
   display: flex;
   flex-direction: column;
@@ -1348,6 +1383,7 @@ function toggleHeatmap() {
 
 .legend {
   display: flex;
+  position: relative;
   justify-content: space-around;
   margin-top: 15px;
 }
@@ -1887,22 +1923,24 @@ function toggleHeatmap() {
 
 
 .calendar {
-    margin-top: 10px;
+    margin-top: -5px;
     margin-left: -3px;
     width: 300px;
     height: 300px;
 }
-/* 使用 ::v-deep 覆盖 el-calendar 的样式 上个月 今天 下个月的按钮*/
-::v-deep .el-calendar__header .el-button {
+// 日历格式修改
+.el-calendar {
   background-color: transparent;
-  color: aqua;
-  border: aqua;
-  font-size: 12px;
+  color: #000000;
+ 
 }
 
-::v-deep .el-calendar__header .el-button:hover {
-  background-color: rgba(255, 255, 255, 0.204);
+/* 使用 ::v-deep 覆盖 el-calendar 的样式 上个月 今天 下个月的按钮*/
+::v-deep .el-calendar__header .el-button {
+  display: none;
 }
+
+
 // 日历样式
 ::v-deep .el-calendar {
 
@@ -1910,20 +1948,21 @@ function toggleHeatmap() {
     padding-right: 8px;
 
     .el-calendar__header {
+        margin-left: 86px;
         font-size: 13px;
         color: aqua;
-        // line-height: 10px;
+        line-height: 10px;
         border-bottom: 0;
     }
 
     .el-calendar__body {
-        padding: 0px 0px 20px;
+        margin-top: -15px;
+        padding: 0px 0px 2px;
         thead {
             th {
                 color: aqua;
                 font-weight: bold;
                 font-size: 12px;
-                top: -10px;
             }
         }
 
@@ -1947,28 +1986,18 @@ function toggleHeatmap() {
                     width: 20px;
                     text-align: center;
                     border-radius: 50%;
-                    background-color: rgb(0, 255, 255);
+                    background-color: aqua;
                     display: inline-block;
                     margin-left: 10px;
                 }
 
                 &:hover {
                     background-color: unset;
-                    //   span {
-                    //     background-color: #7f2ca91a;
-                    //     color: #7f2ca9;
-                    //   }
                 }
             }
 
             .is-selected {
                 background-color: unset;
-                // .el-calendar-day {
-                //   span {
-                //     background-color: #7f2ca9;
-                //     color: #ffffff;
-                //   }
-                // }
             }
         }
     }
@@ -1977,6 +2006,7 @@ function toggleHeatmap() {
 </style>
 
 <style lang="css">
+
 /* 使用更高优先级的选择器 */
 ::v-deep .el-input__inner {
   background: transparent;

@@ -1,13 +1,26 @@
 <template>
-    <div class="bg"></div>
     <Header></Header>
+    <div class="bg">
+        
+    </div>
+    
+    
 </template>
 
 <script setup>
 import Header from '@/components/Header.vue';
+
+
+
+
 </script>
 
+<style lang="css">
+
+</style>
+
 <style lang="scss" scoped>
+
 .bg {
     width: 1475px; 
     height: 100vh;
