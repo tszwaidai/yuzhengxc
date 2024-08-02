@@ -3,38 +3,8 @@
     <div id="container" style="width: 1600px; height: 100vh;margin-left: -130px;">
     </div>
 
-    <!-- 页面头部布局 -->
-    <div class="top">
-        <span>智慧渔政视频预警系统</span>
-
-        <div class="title">
-            <el-button type="text" :class="{ 'active-button': activeButton === 'humanMachine' }"
-            @click="setActiveButton('humanMachine')">人机联防</el-button>
-            <el-button type="text" :class="{ 'active-button': activeButton === 'warningEvents' }"
-            @click="setActiveButton('warningEvents')">预警事件</el-button>
-            <el-button type="text" :class="{ 'active-button': activeButton === 'videoSquare' }"
-            @click="setActiveButton('videoSquare')">视频广场</el-button>
-            <el-button type="text" :class="{ 'active-button': activeButton === 'situationAnalysis' }"
-            @click="setActiveButton('situationAnalysis')">态势分析</el-button>
-        </div>
-
-        <!-- 退出登录 -->
-        <div class="user">
-            <el-dropdown @command="handleCommand">
-                <el-button type="primary" class="custom-button">
-                    <img src="../assets/icon_my.png">
-                    管理员
-                    <img src="../assets/icon_accout_arrow@2x.png">
-                </el-button>
-                <template #dropdown>
-                    <el-dropdown-menu>
-                        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown>
-        </div>
-
-    </div>
+     <!-- 页面头部布局 -->
+    <Header></Header>
 
     <!-- 多选框功能 -->
     <div class="map-op">
@@ -488,6 +458,8 @@ import fishImg from '@/assets/捕鱼截图.png'
 import fishImg1 from '@/assets/捕鱼截图1.png'
 import jiankongIcon from '@/assets/icon_location@3x.png'
 import axios from 'axios';
+import router from '@/router';
+import Header from '@/components/Header.vue';
 
 // 视频文件路径
 const videoSrc = ref('/public/video/捕鱼.mp4');
@@ -598,11 +570,12 @@ const viewMoreImages = () => {
 };
 
 
-const activeButton = ref('humanMachine'); // 默认选中的按钮
+const activeButton = ref('home'); // 默认选中的按钮
 
 // 激活按钮
 const setActiveButton = (button) => {
   activeButton.value = button;
+  router.push({ name: button });
 };
 
 const value = ref(null);

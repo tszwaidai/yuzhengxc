@@ -1,11 +1,11 @@
 <template>
-    <div class="login">
+    <div class="bg">
         <div class="login-bg">
             <img src="../assets/bg_pic.png"/>
         </div>
         <div class="login-box">
             <span>宁波市智慧渔政视频预警服务系统</span>
-            <div>
+            <div class="bg2">
                 <img src="../assets/bg_login.png"/>
                 <div class="login-form">
                     <form @submit.prevent="handleLogin">
@@ -65,15 +65,17 @@ export default {
 
 
 
-.login {
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
+.bg {
+    // background-color: aqua;
+    width: 1475px; 
+    height: 100vh;
+    margin-left: -130px;
+    // margin-top: 100px;
     background-size: cover;
-    background-repeat: no-repeat;
-    position: absolute;
-    background-image: url('../assets/bg_bottom.png');
+    // background-repeat: no-repeat;
+    // position: absolute;
+    background: url('../assets/bg_bottom.png');
+    background-attachment: fixed;
 }
 .login-bg {
     img {
