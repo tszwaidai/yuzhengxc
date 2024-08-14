@@ -109,7 +109,7 @@ const logout = () => {
     margin-top: -170px;
 
     .custom-button {
-        border: 2px solid rgb(0, 32, 67, 0.544);
+        border: 2px solid rgba(255, 255, 255, 0.477);
         /* 边框颜色和透明度 */
         border-radius: 15px;
         /* 圆角边框 */

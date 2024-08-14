@@ -194,7 +194,15 @@
                 <img src="../assets/13.png" @click="nextYear" style="position: relative;top: 25px;left: 180px;width: 6px;">
                 <img src="../assets/left.png" @click="prevMonth"  style="position: relative;top: 27px;left: 50px;width: 12px;">
                 <img src="../assets/right.png" @click="nextMonth" style="position: relative;top: 25px;left: 180px;width: 12px;">
-                <el-calendar v-model="calendar" class="calendar" ></el-calendar>
+                <el-calendar v-model="calendar" class="calendar" >
+                    <!-- <template #date-cell="{ date, data }">
+                        <div
+                        :class="{'se-date': isSeDate(date),'warning-date': isWarningDate(date)}"
+                        >
+                        {{ date.getDate() }}
+                        </div>
+                    </template> -->
+                </el-calendar>
             </div>
 
 
@@ -493,6 +501,34 @@ const nextYear = () => {
   const newDate = new Date(calendar.value);
   newDate.setFullYear(newDate.getFullYear() + 1);
   calendar.value = newDate;
+};
+
+// 警告日期
+const warningDates = [
+    new Date(2024, 7, 15), 
+    new Date(2024, 7, 20),
+]
+
+const seDates = [
+    new Date(2024, 7, 18)
+]
+
+const isSeDate = (date) => {
+  return seDates.some(
+    (d) =>
+      d.getFullYear() === date.getFullYear() &&
+      d.getMonth() === date.getMonth() &&
+      d.getDate() === date.getDate()
+  );
+};
+
+const isWarningDate = (date) => {
+  return warningDates.some(
+    (d) =>
+      d.getFullYear() === date.getFullYear() &&
+      d.getMonth() === date.getMonth() &&
+      d.getDate() === date.getDate()
+  );
 };
 
 // 视频文件路径
@@ -2002,6 +2038,18 @@ function toggleHeatmap() {
         }
     }
 
+}
+
+// 自定义日期样式
+.se-date {
+  background-color: tomato;
+  
+}
+
+// 高亮日期样式
+.warning-date {
+  background-color: yellow;
+  
 }
 </style>
 
