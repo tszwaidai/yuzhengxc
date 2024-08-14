@@ -11,6 +11,7 @@
                 <span style="position: relative;color: yellow;left: 280px;top: -25px;">872</span>
                 </div> 
                 </div> 
+                <!-- 搜索框 -->
                 <div>
                         <el-date-picker
                           v-model="date1"
@@ -47,6 +48,23 @@
                         />
                         </el-select>
                 </div>
+                <!-- 滚动条 -->
+                <div class="video">
+                  <el-scrollbar height="550px" style="margin-top: -15px; width: 370px;margin-left: -5px;">
+                    <div class="scrollbar">
+                        <div v-for="(item, index) in 10" :key="index" class="scrollbar-row">
+                        <div class="scrollbar-item"
+                            :class="{ 'active': activeItem === index * 2 }"
+                            @click="setActiveItem(index * 2)">
+                            <span style="font-weight: bold;position: relative;top: 100px;left: -35px;color: white;">疑似船只</span>
+                            <span style="font-size: 12px;color: lightblue;position: relative;top: 100px;left: -35px;">（类型）</span>
+                            <span style="width: 40px;height: 20px;background-color:darkgray;font-size: 10px;padding: 3px;font-weight: bold;margin-top: 210px;margin-left: 100px;color: white;border-radius: 4px;">待处理</span>
+                        </div>
+                        </div>
+                    </div>   
+                </el-scrollbar>
+                </div>
+
             </div>
         </div>
     </div>
@@ -83,10 +101,49 @@ const options = [
   },
 ]
 
+// 跟踪当前被点击的框
+const activeItem = ref(null);
+
+// 设置当前被点击的框
+const setActiveItem = (item) => {
+  activeItem.value = item;
+};
 
 </script>
 
 <style lang="scss" scoped>
+
+.scrollbar {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.scrollbar-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  margin-left: 15px;
+
+}
+.scrollbar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 175px;
+  width: 100%; /* 设置为父容器宽度的48%，以便有间隙 */
+  margin-bottom: 20px;
+  border: 1px solid black;
+  background: url('../assets/捕鱼截图1.png');
+  background-size:cover;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.scrollbar-item.active {
+  border-color: yellow;
+}
+
 :deep .el-select__popper {
   border: none !important; // 去掉 el-popper 的边框
   box-shadow: none !important; // 去掉阴影效果（如果有的话）

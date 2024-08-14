@@ -83,30 +83,6 @@
                         style="width: 294px; margin-top: 5px;"
                     />
 
-                    <!-- <el-dropdown>
-                    <el-button class="eq" >
-                        <span class="button-text">设备</span>
-                    <el-icon class="arrow-icon1"><arrow-down /></el-icon>
-                    </el-button>
-                    <template #dropdown>
-                        <el-dropdown-menu>
-                        <el-dropdown-item>设备1</el-dropdown-item>
-                        <el-dropdown-item>设备2</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                    </el-dropdown>
-                    <el-dropdown>
-                    <el-button class="status" >
-                        <span class="button-text">处理状态</span>
-                    <el-icon class="arrow-icon2"><arrow-down /></el-icon>
-                    </el-button>
-                    <template #dropdown>
-                        <el-dropdown-menu>
-                        <el-dropdown-item>待处理</el-dropdown-item>
-                        <el-dropdown-item>已处理</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                    </el-dropdown> -->
 
                     <el-select
                             v-model="eq_value"
