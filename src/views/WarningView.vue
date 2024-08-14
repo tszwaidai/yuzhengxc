@@ -12,7 +12,6 @@
                 </div> 
                 </div> 
                 <div>
-                        
                         <el-date-picker
                           v-model="date1"
                           type="date"
@@ -20,7 +19,6 @@
                           popper-class="popperClass"
                           style="width: 115px;margin-left: 10px;margin-top: 10px;"
                         />
-                        
                         <el-select
                             v-model="eq_value"
                             :teleported="false"
@@ -223,28 +221,28 @@ const options = [
 <style lang="scss">
 .popperClass {
 
-//图标样式
-.el-icon {
-  color: #fff;
-}
+  //图标样式
+  .el-icon {
+    color: #fff;
+  }
 
-//头部样式
-.el-date-picker__header-label {
-  color: #fff;
-  font-size: 18px;
-}
+  //头部样式
+  .el-date-picker__header-label {
+    color: #fff;
+    font-size: 18px;
+  }
 
-// 星期样式
-.el-date-table th {
-  color: #fff;
-}
-// 时间选择器层样式
-.el-picker-panel {
-  z-index: 2007;
-  color: #fff;
-  background: #15325d;
-  
-}
+  // 星期样式
+  .el-date-table th {
+    color: #fff;
+  }
+  // 时间选择器层样式
+  .el-picker-panel {
+    z-index: 2007;
+    color: #fff;
+    background: #15325d;
+    
+  }
 }
 
 

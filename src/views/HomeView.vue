@@ -58,18 +58,19 @@
 
             <!-- 预警展示的内容 -->
             <template v-if="showWarning">
-                <el-dropdown>
-                <el-button class="event-type" >
-                    <span class="button-text">事件类型</span>
-                    <el-icon class="arrow-icon"><arrow-down /></el-icon>
-                </el-button>
-                    <template #dropdown>
-                        <el-dropdown-menu>
-                        <el-dropdown-item>紧急</el-dropdown-item>
-                        <el-dropdown-item>不紧急</el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                </el-dropdown>
+                    <el-select
+                        v-model="type_value"
+                        :teleported="false"
+                        placeholder="事件类型"
+                        style="width: 295px;margin-top: 10px;margin-left: 0px;"
+                    >
+                    <el-option
+                        v-for="item in options1"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                    />
+                </el-select>
 
                     <el-date-picker
                         v-model="value"
@@ -78,11 +79,11 @@
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
                         :size="size"
-                        popper-class="custom-date-picker"
+                        popper-class="datePicker"
                         style="width: 294px; margin-top: 5px;"
                     />
 
-                    <el-dropdown>
+                    <!-- <el-dropdown>
                     <el-button class="eq" >
                         <span class="button-text">设备</span>
                     <el-icon class="arrow-icon1"><arrow-down /></el-icon>
@@ -105,7 +106,35 @@
                         <el-dropdown-item>已处理</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
-                    </el-dropdown>
+                    </el-dropdown> -->
+
+                    <el-select
+                            v-model="eq_value"
+                            :teleported="false"
+                            placeholder="设备"
+                            style="width: 145px;margin-top: 5px;margin-left: 0px;"
+                        >
+                        <el-option
+                            v-for="item in options2"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                        </el-select>
+                         <el-select
+                            v-model="status_value"
+                            :teleported="false"
+                             placeholder="处理状态"
+                            style="width: 145px;margin-left: 150px;margin-top: -60px;"
+                        >
+                        <el-option
+                            v-for="item in options3"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                        </el-select>
+
                     
                     <!-- 左侧滚动条 -->
                     <div class="videoes">
@@ -475,6 +504,77 @@ import jiankongIcon from '@/assets/icon_location@3x.png'
 import axios from 'axios';
 import router from '@/router';
 import Header from '@/components/Header.vue';
+
+const type_value = ref('');
+const eq_value = ref('');
+const status_value = ref('');
+// 事件类型选项
+const options1 = [
+  {
+    value: 'Option1',
+    label: 'Option1',
+  },
+  {
+    value: 'Option2',
+    label: 'Option2',
+  },
+  {
+    value: 'Option3',
+    label: 'Option3',
+  },
+  {
+    value: 'Option4',
+    label: 'Option4',
+  },
+  {
+    value: 'Option5',
+    label: 'Option5',
+  },
+]
+const options2 = [
+  {
+    value: 'Option1',
+    label: 'Option1',
+  },
+  {
+    value: 'Option2',
+    label: 'Option2',
+  },
+  {
+    value: 'Option3',
+    label: 'Option3',
+  },
+  {
+    value: 'Option4',
+    label: 'Option4',
+  },
+  {
+    value: 'Option5',
+    label: 'Option5',
+  },
+]
+const options3 = [
+  {
+    value: 'Option1',
+    label: 'Option1',
+  },
+  {
+    value: 'Option2',
+    label: 'Option2',
+  },
+  {
+    value: 'Option3',
+    label: 'Option3',
+  },
+  {
+    value: 'Option4',
+    label: 'Option4',
+  },
+  {
+    value: 'Option5',
+    label: 'Option5',
+  },
+]
 
 // 日历
 const calendar = ref(new Date());
@@ -1046,6 +1146,69 @@ function toggleHeatmap() {
 
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
+
+
+// 选中字体色
+:deep .el-input__inner {
+  color: #ffffff!important;
+  // background-color: #2fba64!important; // 藏蓝色背景
+}
+
+:deep .el-select__popper {
+  border: none !important; // 去掉 el-popper 的边框
+  box-shadow: none !important; // 去掉阴影效果（如果有的话）
+}
+
+:deep .el-select-dropdown {
+  border: none !important; // 去掉 el-select-dropdown 的边框
+  box-shadow: none !important; // 去掉阴影效果（如果有的话）
+}
+
+// 下拉框背景
+:deep .el-select__wrapper  {
+  border: none;
+  background-color: transparent!important;
+}
+  
+// 选中字体色
+:deep .el-range-input {
+  color: #ffffff!important;
+  // background-color: #2fba64!important; // 藏蓝色背景
+}
+:deep .el-range-separator {
+    color: #ffffff;
+}
+
+// 选中为白色
+:deep .el-select__selected-item  {
+  span {
+    color: #ffffff!important;
+  }
+}
+
+// 下拉项颜色
+:deep .el-select-dropdown__item {
+  color: #ffffff!important; // 下拉项文字颜色
+}
+
+// 下拉选项鼠标经过颜色
+:deep .el-select-dropdown__item:hover {
+  background-color: #6cc0df71!important; // 下拉项选中颜色
+  box-shadow: inset 0 0 10px #ffffff !important; // 发光效果
+}
+:deep .el-select-dropdown__item.active {
+  background-color: #45aad6b0!important; // 下拉项选中颜色
+}
+
+:deep .el-popper {
+  background-color: #15325d!important;
+}
+
+// 展开下拉边框箭头颜色
+:deep .el-popper .el-popper__arrow::before {
+  // border-top: 1px solid #ffffff!important;
+  background-color: #15325d!important;
+}
 
 
 .scrollbar-demo-container0 {
@@ -2053,45 +2216,41 @@ function toggleHeatmap() {
 }
 </style>
 
-<style lang="css">
+<style lang="scss">
 
 /* 使用更高优先级的选择器 */
-::v-deep .el-input__inner {
-  background: transparent;
-  color: white ; /* 确保文字颜色生效 */
-}
 
+
+.datePicker {
+    //图标样式
+  .el-icon {
+    color: #fff;
+  }
+
+  //头部样式
+  .el-date-picker__header-label {
+    color: #fff;
+    font-size: 18px;
+  }
+
+  // 星期样式
+  .el-date-table th {
+    color: #fff;
+  }
+  // 时间选择器层样式
+  .el-picker-panel {
+    z-index: 2007;
+    color: #fff;
+    background: #15325d;
+    
+  }
+}
 /* 多选框 */
 .custom-checkbox .el-checkbox__label {
     color: white; /* 将文字颜色改为白色 */
 }
-.custom-date-picker .el-input__inner {
-  background-color: transparent;/* 输入框背景颜色*/
-  color: #ffffff ; /* 输入框文字颜色 */
-  border-color: #ffffff !important; /* 输入框边框颜色 */
-}
-.custom-date-picker .el-picker-panel {
-  background-color: #34495e !important; /* 日历面板背景颜色 */
-  color: #ffffff!important; /* 日历面板文字颜色 */
-}
 
-.custom-date-picker .el-picker-panel__body,
-.custom-date-picker .el-picker-panel__content,
-.custom-date-picker .el-picker-panel__footer {
-  background-color: #34495e !important; /* 日历面板内容和底部背景颜色 */
-  color: #ffffff !important; /* 日历面板内容和底部文字颜色 */
-}
 
-.custom-date-picker .el-picker-panel__footer .el-button--default {
-  color: #ffffff !important; /* 按钮文字颜色 */
-  border-color: #ffffff !important; /* 按钮边框颜色 */
-}
-
-.custom-date-picker .el-picker-panel__footer .el-button--default:hover,
-.custom-date-picker .el-picker-panel__footer .el-button--default:focus {
-  background-color: #3b58984d !important; /*按钮悬停和聚焦背景颜色*/
-  color: #ffffff !important; /*按钮悬停和聚焦文字颜色*/
-}
 
 /* 鼠标浮动过的背景颜色 */
 .el-tree-node__content:hover {
