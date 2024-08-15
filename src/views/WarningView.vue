@@ -137,6 +137,61 @@
                 </div>
             </template>
 
+            <!-- 实时监控 -->
+             <template v-if="showW">
+              <div>
+                <img src="../assets/监控3.png" class="body-image"> 
+                <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;color: white;">未知</span>
+                <div class="video-play">
+                    <video ref="videoPlayer" class="video-player" controls>
+                    <source :src="videoSrc1" type="video/mp4">
+                    </video>
+                </div>
+                <div class="cloud-c">云台控制</div>
+                <div style="margin-left: 550px;margin-top: 10px;color: white;">目前状态：</div>
+                <div style="margin-left: 625px;margin-top: -22px; color:deepskyblue;">自动</div>
+                <div class="button dianji">
+                </div>
+                <div>
+                <!-- 方向按钮 -->
+                <button class="image-button">
+                    <img src="../assets/left5.png" alt="左键" class="left5">
+                </button>    
+                <button class="image-button">
+                    <img src="../assets/up5.png" alt="上键" class="up5">
+                </button>
+                <button class="image-button">
+                    <img src="../assets/down6.png" alt="下" class="down6">
+                </button>
+                <button class="image-button">
+                    <img src="../assets/right3.png" alt="右键" class="right3">
+                </button>
+                    <img src="../assets/center2.png" alt="中心键" class="center">
+               </div>
+               <!-- 小按钮 -->
+               <div class="button bianbei-add">
+                <img src="../assets/icon_bianbei01.png" style="margin-left: -20px;margin-right: 5px;margin-top: 3px;">
+                <span style="top: -3px;position: relative;color: white;">变倍 +</span>
+               </div>
+               <div class="button bianbei-de"> 
+                <img src="../assets/icon_bianbei01(1).png" style="margin-left: 18px;margin-top: 8px;margin-right: 5px;">
+                <span style="position: relative;top: -2px;color: white;">变倍 -</span>
+                </div>
+               <div class="button bianjiao-add">
+                <img src="../assets/icon_bianjiao01.png" style="margin-left: 15px;margin-top: 10px;">
+                <span style="position: relative;left: 5px;top: -3px;color: white;">变焦 +</span>
+                </div>
+               <div class="button bianjiao-de">
+                <img src="../assets/icon_bianjiao02.png" style="margin-left: 18px;margin-top: 10px;">
+                <span style="position: relative;top: -3px;left: 5px;color: white;">变焦 -</span>
+               </div>
+                <!-- 大按钮 -->
+                <div class="button close">
+                    <img src="../assets/ssjk.png" style="width: 35px;margin-left: 35px;margin-top: 15px;">
+                    <span style="position: relative;left: 7px;top: -10px;color: white;">关闭激光</span>
+                </div>
+                </div>
+             </template>
         </div>
       </div>
     </div>
@@ -148,6 +203,24 @@ import Header from '@/components/Header.vue';
 import { ref , onMounted , nextTick} from 'vue'
 import fishImg from '@/assets/捕鱼截图.png'
 import fishImg1 from '@/assets/捕鱼截图1.png'
+
+
+// 控制显示内容的布尔值
+const showW = ref(false);
+
+// 切换显示内容的函数
+const handleClick = (tab) => {
+  if (tab.props.name === 'second') { //一定要加props
+    showW.value = true;
+    // 时间初始化
+    
+    console.log("切换到预警事件");
+  } else {
+    showW.value = false;
+    console.log("切换到实时监控");
+  }
+};
+
 const videoSrc1 = ref('/public/video/钓鱼.mp4');
 const date1 = ref('');
 const eq_value = ref('');
@@ -198,6 +271,140 @@ const dataList = ref([
 </script>
 
 <style lang="scss" scoped>
+.close {
+    width: 170px;
+    height: 70px;
+    background-image: url('../assets/bg05.png');
+    background-size: contain;
+    margin-left: 730px;
+    margin-top: -70px;
+}
+
+.bianjiao-de {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg04.png');
+    background-size: contain;
+    margin-left: 630px;
+    font-size: 12px;
+    margin-top: -35px;
+}
+
+.bianjiao-add {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg03.png');
+    background-size: contain;
+    margin-left: 545px;
+    font-size: 12px;
+}
+
+.bianbei-de {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg02.png');
+    background-size: contain;
+    margin-left: 630px;
+    margin-top: -35px;
+    font-size: 12px;
+}
+.bianbei-add {
+    width: 84px;
+    height: 35px;
+    background-image: url('../assets/bg01.png');
+    background-size: contain;
+    margin-top: 25px;
+    margin-left: 545px;
+    padding: 6px 0 0 35px;
+    font-size: 12px;
+}
+/* 设置图片按钮样式 */
+.image-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.image-button img {
+  transition: transform 0.3s ease, filter 0.3s ease; /*动画过渡时间 */
+}
+
+.image-button:hover img {
+  transform: scale(1.1); /* 放大效果 */
+  filter: brightness(1.2); /* 增亮效果 */
+}
+
+.image-button:active img {
+  transform: scale(0.9); /* 缩小效果 */
+  filter: brightness(0.8); /* 变暗效果 */
+}
+.dianji {
+    width: 32px;
+    height: 25px;
+    background-image: url('../assets/icon_dianji_pre.png');
+    background-size: contain;
+    margin-left: 880px;
+    margin-top: -20px;
+}
+.button {
+  transition: transform 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+.button:hover {
+  transform: scale(1.05);
+  //   background-color: #f0f0f0; /* 悬停时背景色 */
+}
+.center {
+    width: 80px;
+    margin-top: -112px;
+    margin-left: -110px;
+    position: absolute;
+}
+.right3 {
+    width: 60px;
+    margin-top: -163px;
+    margin-left: -28px;
+    position: absolute;
+}
+.down6 {
+    height: 56px;
+    width: 140px;
+    margin-left: 683px;
+    margin-top: -33px;
+}
+.up5 {
+    height: 60px;
+    width: 142px;
+    margin-bottom: 105px;
+    margin-left: -29px;
+}
+.left5 {
+    width: 60px;
+    margin-left: 650px;
+    margin-top: 56px;
+}
+
+.cloud-c {
+    width: 400px;
+    height: 23px;
+    background-color: #23a1ba91;
+    margin-left: 540px;
+    margin-top: -398px;
+    color: #ffffff;
+    padding: 0 0 0 20px;
+    border-left: 2px solid white;
+    font-weight: bold;
+}
+
+.video-player {
+    width: 500px;
+    height: 400px;
+    margin-left: 15px;
+    position: relative;
+    top: -10px;
+}
+
+
 /* 修改左侧箭头按钮样式 */
 :deep .el-carousel__arrow--left {
   background-color: #15325d; /* 修改背景色 */

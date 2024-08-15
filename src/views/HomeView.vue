@@ -299,7 +299,7 @@
                     <img src="../assets/ssjk.png" style="width: 35px;margin-left: 35px;margin-top: 15px;">
                     <span style="position: relative;left: 7px;top: -10px;">关闭激光</span>
                 </div>
-            </div>
+                </div>
         </template>
 
         <!-- 预警事件 -->
