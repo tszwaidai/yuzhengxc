@@ -79,6 +79,8 @@ const logout = () => {
 
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
+
+
 .top {
     width: 100%;
     height: 80px;

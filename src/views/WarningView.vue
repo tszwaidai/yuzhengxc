@@ -1,6 +1,7 @@
 <template>
     <Header></Header>
     <div class="bg">
+      <!-- 左侧 -->
         <div class="left">
             <div class="left-top"></div>
             <div class="left-main">
@@ -18,6 +19,7 @@
                           type="date"
                           :size="size"
                           popper-class="popperClass"
+                          placeholder="时间"
                           style="width: 115px;margin-left: 10px;margin-top: 10px;"
                         />
                         <el-select
@@ -38,6 +40,7 @@
                             v-model="type_value"
                             :teleported="false"
                             class="select_box"
+                            placeholder="类型"
                             style="width: 115px;margin-left: 250px;margin-top: -60px;"
                         >
                         <el-option
@@ -67,6 +70,75 @@
 
             </div>
         </div>
+      <!-- 中间 -->
+      <div class="main-top">
+        <div class="main-bg">
+            
+            <div class="custom-header">
+                <img src="../assets/ship.png" alt="头部图片" class="header-image">
+                <span class="header-title">事件详情</span>
+                <div>
+                    <el-tabs v-model="activeName" :stretch="false" style="color: white; margin-top: 10px;margin-left: 700px;caret-color: transparent;" @tab-click="handleClick">
+                        <el-tab-pane label="事件详情" name="first" ></el-tab-pane>
+                        <el-tab-pane label="实时监控" name="second" ></el-tab-pane>
+                    </el-tabs>
+                </div>
+            </div>
+            
+
+            <!-- 事件详情 -->
+            <template v-if="!showW">
+                <!-- 视频 -->
+                <div>
+                    <video ref="videoPlayer" class="video-player1" controls>
+                    <source :src="videoSrc1" type="video/mp4">
+                    </video> 
+                </div>
+
+                <!-- 多图平铺走马灯 -->
+                <div v-for="(item, index) in dataList" :key="index">
+                    <el-carousel :autoplay="false" height="250px"  class="carousel-container">
+                        <el-carousel-item v-for="(imgData, i) in item.newDataList" :key="i" class="carousel-item">
+                            <div class="images-container">
+                                <img v-for="(img, index) in imgData" :key="index" :src="img.url" alt="" class="top-img" />
+                            </div>
+                        </el-carousel-item>
+                    </el-carousel>
+                </div>
+                <!-- 事件详情右侧 -->
+                <div class="event-desc">
+                    <div>
+                    <img src="../assets/监控3.png" class="body-image"> 
+                    <span style="margin-left: 10px;top: -8px;position: relative;font-weight: bold;color: white;">未知</span>
+                    </div>
+                    <div class="chuli-top">
+                    <div class="chuli-icon"></div>
+                    <span class="chuli-span">处理详情</span>
+                    </div>
+                    <div>
+                    <el-scrollbar style="height: 400px; width: 280px; margin-left: 40px;" class="custom-scrollbar">
+                        <div class="details-content">
+                        <br>
+                        <p>预警类型：<span class="details">疑似捕鱼</span></p>
+                        <p>预警方位：<span class="details">H5</span></p>
+                        <p>发生距离：<span class="details">210米</span></p>
+                        <p>预警时间：<span class="details">2023-01-01 17:14:19.0</span></p>
+                        <p>预警状态：<span style="width: 10px;height: 40px;background-color:tomato;color: white;padding: 5px;border-radius: 4px;">待处理</span></p>
+                        
+                        <p>推送时间：<span class="details">2023-01-01 19:14:00.0</span></p>
+                        <p>负责人：<span class="details">xxx</span></p>
+                        <p>联系方式：<span class="details">12345678901</span></p>
+                        <p>推送内容：<span class="details">暂无推送内容</span></p>
+                        <p>反馈信息：<span class="details">暂无反馈信息</span></p>
+                        <p>反馈图片：<span class="details"></span></p> 
+                        </div>
+                    </el-scrollbar>
+                </div>
+                </div>
+            </template>
+
+        </div>
+      </div>
     </div>
         
 </template>
@@ -74,7 +146,9 @@
 <script setup>
 import Header from '@/components/Header.vue';
 import { ref , onMounted , nextTick} from 'vue'
-
+import fishImg from '@/assets/捕鱼截图.png'
+import fishImg1 from '@/assets/捕鱼截图1.png'
+const videoSrc1 = ref('/public/video/钓鱼.mp4');
 const date1 = ref('');
 const eq_value = ref('');
 const type_value = ref('');
@@ -100,7 +174,7 @@ const options = [
     label: 'Option5',
   },
 ]
-
+const activeName = ref('first'); //弹窗默认点击实时监控
 // 跟踪当前被点击的框
 const activeItem = ref(null);
 
@@ -109,9 +183,219 @@ const setActiveItem = (item) => {
   activeItem.value = item;
 };
 
+// 事件详情走马灯图
+const dataList = ref([
+    {
+        name: '第一批图片',
+        newDataList: [
+            [{url: fishImg},{url: fishImg},{url: fishImg}],
+            [{url: fishImg1},{url: fishImg1},{url: fishImg1}],
+        ]
+
+    },
+])
+
 </script>
 
 <style lang="scss" scoped>
+/* 修改左侧箭头按钮样式 */
+:deep .el-carousel__arrow--left {
+  background-color: #15325d; /* 修改背景色 */
+  color: white; /* 修改图标颜色 */
+  border-radius: 2%; /* 让按钮变成圆形 */
+  width: 35px; /* 设置按钮的宽度 */
+  height: 150px; /* 设置按钮的高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -20px;
+}
+
+/* 修改右侧箭头按钮样式 */
+:deep .el-carousel__arrow--right {
+  background-color: #15325d; /* 修改背景色 */
+  color: white; /* 修改图标颜色 */
+  border-radius: 2%; /* 让按钮变成圆形 */
+  width: 35px; /* 设置按钮的宽度 */
+  height: 150px; /* 设置按钮的高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -20px;
+}
+
+/* 修改箭头图标大小 */
+:deep .el-carousel__arrow i {
+  font-size: 20px; /* 设置图标的大小 */
+}
+
+:deep .el-carousel__indicator {
+  display: none;
+}
+
+/* 自定义 el-scrollbar 的样式 */
+.custom-scrollbar ::v-deep .el-scrollbar__wrap {
+  scrollbar-color: aqua transparent; /* 滚动条颜色 */
+  scrollbar-width: thin; /* 滚动条宽度 */
+}
+
+.custom-scrollbar ::v-deep .el-scrollbar__thumb {
+  background-color: aqua; /* 滚动条颜色 */
+  border-radius: 10px; /* 圆角 */
+}
+
+.custom-scrollbar ::v-deep .el-scrollbar__track {
+  background-color: transparent; /* 滚动条轨道颜色 */
+}
+
+// 标签
+::v-deep .el-tabs__item {
+    color: white;
+}
+::v-deep .el-tabs__item.is-active {
+    color: aqua;
+}
+::v-deep .el-tabs__nav-wrap::after {
+    height: 0;
+}
+::v-deep .el-tabs__active-bar {
+    background-color: aqua;
+}
+
+.main-bg {
+  width: 1030px;
+  height: 670px;
+  border: 1px solid rgb(84, 166, 218);
+  border-radius: 4px;
+  position: relative;
+  top: 15px;
+}
+
+.details {
+    color: #ffffff;
+}
+
+.details-content p {
+  margin: 10px 0;
+  color: aqua;
+}
+.chuli-span {
+    position: relative;
+    left: 50px;
+    top: -15px;
+    // font-family: 'font2_style';
+    font-size: 1.1em;
+    color: white;
+}
+
+.chuli-icon {
+    width: 18px;
+    height: 18px;
+    top: 5px;
+    margin-left: 7px;
+    background-image: url('../assets/6.png');
+    position: relative;
+} 
+
+.chuli-top {
+    width: 160px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 15px;
+    background-image: url('../assets/bg_title@2x.png');
+    background-size: cover;
+}
+
+
+.body-image {
+    margin-top: 5px;
+    margin-left: 15px;
+    width: 30px;
+    height: 30px;
+}
+
+.event-desc {
+    width: 320px;
+    height: 580px;
+    background-color:#0024531d;
+    margin-left: 700px;
+    margin-top: -650px;
+}
+
+.carousel-container {
+  margin-bottom: 30px;
+  width: 500px;
+  margin-left: 15px;
+}
+
+.carousel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.top-img {
+  width: 235px;
+  height: 150px;
+  object-fit: cover;
+}
+
+.carousel-container {
+  margin-bottom: 30px;
+  width: 700px;
+  margin-left: 10px;
+}
+
+.carousel-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.images-container {
+  display: flex;
+  justify-content: space-around;
+  width: 700px;
+}
+.video-player1 {
+    width: 700px;
+    height: 380px;
+    margin-left: 5px;
+    position: relative;
+    top: 20px;
+} 
+
+.header-image {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.header-title {
+    color: white;
+    text-shadow: 0 0 10px #00ffff;
+    font-size: 20px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: relative;
+    top: 4px;
+}
+
+.custom-header {
+    display: flex;
+    background: linear-gradient(to right, #3785b2, #7f9cc323); /* 头部颜色 */
+    height: 50px;
+    border-radius: 4px 4px 0 0;
+    // align-items: center;
+}
+.main-top {
+    margin-left: 420px;
+    width: 1030px;
+    height: 5px;
+    background-color: white;
+    border-radius: 2px;
+    margin-top: -600px;
+}
 
 .scrollbar {
   display: flex;

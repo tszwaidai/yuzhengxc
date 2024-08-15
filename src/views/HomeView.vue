@@ -1123,7 +1123,36 @@ function toggleHeatmap() {
 <style lang="scss" scoped>
 @import url('../assets/font/font2.css');
 
+/* 修改左侧箭头按钮样式 */
+:deep .el-carousel__arrow--left {
+  background-color: #15325d; /* 修改背景色 */
+  color: white; /* 修改图标颜色 */
+  border-radius: 2%; /* 让按钮变成圆形 */
+  width: 35px; /* 设置按钮的宽度 */
+  height: 150px; /* 设置按钮的高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -20px;
+}
 
+/* 修改右侧箭头按钮样式 */
+:deep .el-carousel__arrow--right {
+  background-color: #15325d; /* 修改背景色 */
+  color: white; /* 修改图标颜色 */
+  border-radius: 2%; /* 让按钮变成圆形 */
+  width: 35px; /* 设置按钮的宽度 */
+  height: 150px; /* 设置按钮的高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: -20px;
+}
+
+/* 修改箭头图标大小 */
+:deep .el-carousel__arrow i {
+  font-size: 20px; /* 设置图标的大小 */
+}
 // 选中字体色
 :deep .el-input__inner {
   color: #ffffff!important;
