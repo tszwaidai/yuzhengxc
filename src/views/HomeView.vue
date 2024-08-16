@@ -16,10 +16,9 @@
 
     <!-- 左侧栏 -->
     <div class="left">
-
         <div class="left-top">
-            <di0 class="left-icon">
-            </di0>
+            <div class="left-icon">
+            </div>
             <div class="left-title">
                 <span class="span1" >监控/</span>
                 <span class="span2" >预警</span>
