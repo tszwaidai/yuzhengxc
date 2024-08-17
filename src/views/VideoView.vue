@@ -12,7 +12,6 @@
                 <span class="span1" >监控点位</span>
             </div>
             <!-- 监控展示的内容 -->
-            
                 <div class="dianwei"></div>
                 <div class="quyu"></div>
                 <div class="quyushuliang">
@@ -54,7 +53,24 @@
 
 
     <div class="main">
-        <div style="width: 1015px;height: 3px;background-color: white;border-radius: 2px;margin-top: -703px;margin-left: 240px;"></div>
+        <div style="width: 1065px;height: 3px;background-color: white;border-radius: 2px;margin-top: -703px;margin-left: 240px;"></div>
+        <div class="main-bg">
+            
+            <div class="custom-header">
+            <img src="../assets/ship.png" alt="头部图片" class="header-image">
+            <span class="header-title">视频广场</span>
+                <div class="icon1" @click="setGridLayout(1)"></div>
+                <div class="icon4" @click="setGridLayout(4)"></div>
+                <div class="icon9" @click="setGridLayout(9)"></div>
+                <div class="icon12" @click="setGridLayout(12)"></div>
+                <div class="icon0"></div>
+            </div>
+            <div class="video-grid" :style="gridStyle">
+            <div v-for="n in gridItems" :key="n" class="video-box">
+            <video src="/public/video/钓鱼.mp4" controls></video>
+            </div>
+        </div>
+        </div>
 
     </div>
 
@@ -63,7 +79,29 @@
 <script setup>
 import Header from '@/components/Header.vue';
 import axios from 'axios';
-import { onMounted , ref ,watch} from 'vue';
+import { onMounted , ref ,watch, computed} from 'vue';
+
+const gridItems = ref(1); // 默认显示一个方格
+
+const setGridLayout = (count) => {
+  gridItems.value = count;
+};
+
+const gridStyle = computed(() => {
+  const gridTemplate = {
+    1: '1fr',
+    4: 'repeat(2, 1fr)',
+    9: 'repeat(3, 1fr)',
+    12: 'repeat(4, 1fr)',
+  };
+  const gridSize = gridTemplate[gridItems.value] || '1fr';
+  return {
+    display: 'grid',
+    gap: '10px',
+    gridTemplateColumns: gridSize,
+    gridTemplateRows: gridSize,
+  };
+});
 
 const toggleChecked = (node) => {
     node.checked = !node.checked;
@@ -113,6 +151,121 @@ onMounted( () => {
 </script>
 
 <style lang="scss" scoped>
+
+.video-grid {
+  width: 102%;
+  height: 95%;
+  padding: 20px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 54%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000; /* 保证视频方格在main-bg之上 */
+}
+
+.video-box {
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.icon0 {
+    width: 20px;
+    height: 20px;
+    background-image: url('../assets/icon_0@2x.png');
+    background-size: cover;
+    position: relative;
+    top: 15px;
+    left: 60px;
+}
+
+.icon12 {
+    width: 20px;
+    height: 20px;
+    background-image: url('../assets/icon_12@2x.png');
+    background-size: cover;
+    position: relative;
+    top: 15px;
+    left: 45px;
+}
+.icon9 {
+    width: 20px;
+    height: 20px;
+    background-image: url('../assets/icon_9@2x.png');
+    background-size: cover;
+    position: relative;
+    top: 15px;
+    left: 30px;
+}
+
+.icon4 {
+    width: 20px;
+    height: 20px;
+    background-image: url('../assets/icon_4@2x.png');
+    background-size: cover;
+    position: relative;
+    top: 15px;
+    left: 15px;
+    // margin-top: 15px;
+    // margin-left: 700px;
+}
+
+.icon1 {
+    width: 20px;
+    height: 20px;
+    background-image: url('../assets/icon_1@2x.png');
+    background-size: cover;
+    margin-top: 15px;
+    margin-left: 760px;
+}
+
+.header-image {
+    width: 30px;
+    height: 30px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.header-title {
+    color: white;
+    text-shadow: 0 0 10px #00ffff;
+    font-size: 20px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: relative;
+    top: 4px;
+}
+
+.custom-header {
+    display: flex;
+    background: linear-gradient(to right, #3785b2, #7f9cc323); /* 头部颜色 */
+    height: 45px;
+    width: 1065px;
+   
+    margin-top: 10px;
+    // align-items: center;
+}
+.main-bg {
+    width: 1065px;
+    height: 680px;
+    border: 1px solid rgb(109, 122, 129);
+    border-radius: 2px;
+    background-color: rgba(35, 87, 142, 0.531);
+    position: fixed;
+    top: 105px;
+    left: 370px;
+    display: flex;
+    z-index: 999;
+}
 
 .left-icon {
     width: 18px;
@@ -179,7 +332,7 @@ onMounted( () => {
     width: 80px;
     height: 30px;
 
-    top: 196px;
+    top: 206px;
     left: 265px;
     font-weight: bold;
     font-size: 13.5px;
@@ -199,7 +352,7 @@ onMounted( () => {
 
 .quyushuliang {
     position: fixed;
-    top: 170px;
+    top: 177px;
     left: 265px;
     font-size: 20px;
     font-weight: bold;
@@ -209,7 +362,7 @@ onMounted( () => {
 .dianwei {
     width: 40px;
     height: 40px;
-    margin-top: 15px;
+    margin-top: 25px;
     background-image: url('../assets/icon_number@2x.png');
     background-size: contain;
 
@@ -217,7 +370,7 @@ onMounted( () => {
 
 .shuliang {
     position: fixed;
-    top: 170px;
+    top: 177px;
     left: 97px;
     font-size: 20px;
     font-weight: bold;
@@ -228,7 +381,7 @@ onMounted( () => {
     width: 80px;
     height: 30px;
 
-    top: 196px;
+    top: 206px;
     left: 95px;
     font-weight: bold;
     font-size: 13.5px;
