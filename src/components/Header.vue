@@ -126,10 +126,9 @@ const logout = () => {
 
 .title {
     width: 830px;
-    height: 180px;
+    height: 100px;
     margin-top: -50px;
     margin-left: 425px;
-
     .el-button {
         font-family: 'font2_style';
         font-size: 2.25em;

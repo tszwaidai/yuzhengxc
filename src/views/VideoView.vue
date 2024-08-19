@@ -59,14 +59,16 @@
             <div class="custom-header">
             <img src="../assets/ship.png" alt="头部图片" class="header-image">
             <span class="header-title">视频广场</span>
-                <div class="icon1" @click="setGridLayout(1)"></div>
-                <div class="icon4" @click="setGridLayout(4)"></div>
-                <div class="icon9" @click="setGridLayout(9)"></div>
-                <div class="icon12" @click="setGridLayout(12)"></div>
+                <div :class="iconClass('icon1')" @click="setActiveIcon(1)">
+                    {{ console.log('icon1 clicked') }}
+                </div>
+                <div :class="iconClass('icon4')" @click="setActiveIcon(4)"></div>
+                <div :class="iconClass('icon9')" @click="setActiveIcon(9)"></div>
+                <div :class="iconClass('icon12')" @click="setActiveIcon(12)"></div>
                 <div class="icon0"></div>
             </div>
             <div class="video-grid" :style="gridStyle">
-            <div v-for="n in gridItems" :key="n" class="video-box">
+            <div v-for="n in gridItems" :key="n" class="video-box" v-if="gridItems > 0">
             <video src="/public/video/钓鱼.mp4" controls></video>
             </div>
         </div>
@@ -81,27 +83,50 @@ import Header from '@/components/Header.vue';
 import axios from 'axios';
 import { onMounted , ref ,watch, computed} from 'vue';
 
-const gridItems = ref(1); // 默认显示一个方格
 
-const setGridLayout = (count) => {
-  gridItems.value = count;
+const activeIcon = ref(null);  // 当前激活的图标
+const gridItems = ref(0); // 默认显示一个方格
+
+const setActiveIcon = (iconNumber) => {
+  if (activeIcon.value !== iconNumber) {
+    activeIcon.value = iconNumber;
+    setGridLayout(iconNumber);
+  } else {
+    activeIcon.value = null;
+    gridItems.value = 0; // 没有激活图标时，不显示任何视频
+  }
+  console.log('Active icon set to:', activeIcon.value); // 调试日志
+  console.log('Grid items:', gridItems.value); // 调试日志
 };
 
+const setGridLayout = (count) => {
+  gridItems.value = count; // 设置宫格数量
+};
+
+// 切换为各种宫格
 const gridStyle = computed(() => {
   const gridTemplate = {
-    1: '1fr',
+    1: 'repeat(1, 1fr)',
     4: 'repeat(2, 1fr)',
     9: 'repeat(3, 1fr)',
     12: 'repeat(4, 1fr)',
   };
-  const gridSize = gridTemplate[gridItems.value] || '1fr';
+  const gridSize = gridTemplate[gridItems.value] ;
   return {
-    display: 'grid',
+    display: gridItems.value > 0 ? 'grid' : 'none',
     gap: '10px',
     gridTemplateColumns: gridSize,
     gridTemplateRows: gridSize,
   };
 });
+
+const iconClass = (icon) => {
+  const iconNumber = parseInt(icon.replace('icon', ''));
+  return {
+    'icon-active': activeIcon.value === iconNumber,
+    [icon]: true,
+  };
+};
 
 const toggleChecked = (node) => {
     node.checked = !node.checked;
@@ -179,54 +204,58 @@ video {
   object-fit: cover;
 }
 
+
+.icon0, .icon1,.icon4, .icon9, .icon12 {
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  position: relative;
+  top: 15px;
+  cursor: pointer;
+}
+
 .icon0 {
-    width: 20px;
-    height: 20px;
-    background-image: url('../assets/icon_0@2x.png');
-    background-size: cover;
-    position: relative;
-    top: 15px;
-    left: 60px;
-}
-
-.icon12 {
-    width: 20px;
-    height: 20px;
-    background-image: url('../assets/icon_12@2x.png');
-    background-size: cover;
-    position: relative;
-    top: 15px;
-    left: 45px;
-}
-.icon9 {
-    width: 20px;
-    height: 20px;
-    background-image: url('../assets/icon_9@2x.png');
-    background-size: cover;
-    position: relative;
-    top: 15px;
-    left: 30px;
-}
-
-.icon4 {
-    width: 20px;
-    height: 20px;
-    background-image: url('../assets/icon_4@2x.png');
-    background-size: cover;
-    position: relative;
-    top: 15px;
-    left: 15px;
-    // margin-top: 15px;
-    // margin-left: 700px;
+  background-image: url('../assets/icon_0@2x.png');
+  left: 60px;
 }
 
 .icon1 {
-    width: 20px;
-    height: 20px;
-    background-image: url('../assets/icon_1@2x.png');
-    background-size: cover;
-    margin-top: 15px;
-    margin-left: 760px;
+  background-image: url('../assets/icon_1@2x.png');
+  margin-left: 710px;
+  
+}
+
+.icon4 {
+  background-image: url('../assets/icon_4@2x.png');
+  left: 15px;
+  z-index: 2000;
+}
+
+.icon9 {
+  background-image: url('../assets/icon_9@2x.png');
+  left: 30px;
+}
+
+.icon12 {
+  background-image: url('../assets/icon_12@2x.png');
+  left: 45px;
+}
+
+/* 激活后的样式 */
+.icon-active.icon1 {
+  background-image: url('../assets/icon_1_pre@2x.png')!important; /* 激活后的 icon1 图片 */
+}
+
+.icon-active.icon4 {
+  background-image: url('../assets/icon_4_pre@2x.png'); /* 激活后的 icon4 图片 */
+}
+
+.icon-active.icon9 {
+  background-image: url('../assets/icon_9_pre@2x.png'); /* 激活后的 icon9 图片 */
+}
+
+.icon-active.icon12 {
+  background-image: url('../assets/icon_12_pre@2x.png'); /* 激活后的 icon12 图片 */
 }
 
 .header-image {
